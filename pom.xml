@@ -14,6 +14,8 @@
 	<name>TaskApp</name>
 	<description>Application for easy and organized management of projects and tasks</description>
 	<properties>
+		<spring-security.version>6.2.1</spring-security.version>
+		<spring.version>6.1.2</spring.version>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
@@ -25,6 +27,12 @@
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>3.2.2</version>
 		</dependency>
 
 
@@ -52,6 +60,7 @@
 			<version>3.1.1</version>
 		</dependency>
 		<dependency>
+
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
@@ -61,6 +70,14 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>7.0.1.Final</version> <!-- Or the latest version -->
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

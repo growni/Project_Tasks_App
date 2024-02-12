@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
-@Component
+
 public class Runner implements ApplicationRunner {
 
     private final UserService userService;
@@ -19,17 +19,17 @@ public class Runner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        createTestUser();
+//        createTestUser();
     }
 
-    public void createTestUser() {
-        Scanner scanner = new Scanner(System.in);
-
-        String username = scanner.nextLine();
-        String password = scanner.nextLine();
-
-        userService.createUser(username, password);
-
-        System.out.println("Added user to the DB");
-    }
+//    public void createTestUser() {
+//        Scanner scanner = new Scanner(System.in);
+//
+//        String username = scanner.nextLine();
+//        String password = scanner.nextLine();
+//
+//        userService.createUser(username, password);
+//
+//        System.out.println("Added user to the DB");
+//    }
 }
