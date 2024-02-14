@@ -20,11 +20,14 @@ public class Project extends BaseEntity{
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "job_number")
+    private String jobNumber;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Priority priority;
 

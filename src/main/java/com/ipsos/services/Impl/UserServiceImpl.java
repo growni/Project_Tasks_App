@@ -2,6 +2,7 @@ package com.ipsos.services.Impl;
 
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
+import com.ipsos.exceptions.EntityMissingFromDatabase;
 import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.exceptions.UsernameAlreadyExistsException;
 import com.ipsos.repositories.UserRepository;
@@ -12,8 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Optional;
 
-import static com.ipsos.constants.Messages.*;
+import static com.ipsos.constants.Errors.INVALID_PASSWORD;
+import static com.ipsos.constants.Errors.INVALID_USERNAME;
+import static com.ipsos.constants.Errors.*;
 import static com.ipsos.constants.Regex.PASSWORD_REGEX;
 import static com.ipsos.constants.Regex.USERNAME_REGEX;
 
@@ -35,26 +39,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String username, String password) {
+    public User createUser(UserDto userDto) {
 
-        if(!isValidUsername(username)) {
-            throw new InvalidDataException(INVALID_USERNAME);
-        }
+        validateUserDto(userDto);
 
-        if(!isValidPassword(password)) {
-            throw new InvalidDataException(INVALID_PASSWORD);
-        }
-        String hashedPassword = this.passwordEncoder.encode(password);
-
-        UserDto userDto = new UserDto(username, hashedPassword);
-        boolean isPresent = this.userRepository.getByUsername(username).isPresent();
-
-        if(isPresent) {
-            throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, username));
-        }
+        String hashedPassword = this.passwordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(hashedPassword);
 
         User newUser = this.modelMapper.map(userDto, User.class);
         return this.userRepository.save(newUser);
+    }
+
+    private void validateUserDto(UserDto userDto) {
+        if(!isValidUsername(userDto.getUsername())) {
+            throw new InvalidDataException(INVALID_USERNAME);
+        }
+
+        if(!isValidPassword(userDto.getPassword())) {
+            throw new InvalidDataException(INVALID_PASSWORD);
+        }
+
+        boolean isPresent = this.userRepository.getByUsername(userDto.getUsername()).isPresent();
+
+        if(isPresent) {
+            throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, userDto.getUsername()));
+        }
     }
 
     public boolean isValidUsername(String username) {
@@ -64,6 +73,20 @@ public class UserServiceImpl implements UserService {
     public boolean isValidPassword(String password) {
         return password.trim() != "" && password.matches(PASSWORD_REGEX);
     }
+
+    @Override
+    public User getById(Long id) {
+        Optional<User> optionalUser = this.userRepository.findById(id);
+
+        if(optionalUser.isEmpty()) {
+            throw new EntityMissingFromDatabase(USER_NOT_FOUND);
+        }
+
+        return optionalUser.get();
+    }
+
+
+
 
 }
 

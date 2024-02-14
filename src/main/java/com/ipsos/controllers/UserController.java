@@ -22,7 +22,7 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ModelAndView registerUser(@ModelAttribute UserDto userDto) {
-        User newUser = userService.createUser(userDto.getUsername(), userDto.getPassword());
+        User newUser = userService.createUser(userDto);
 
         ModelAndView view = new ModelAndView("dashboard");
         return view;
