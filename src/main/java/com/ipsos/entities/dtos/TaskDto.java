@@ -5,7 +5,6 @@ import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;

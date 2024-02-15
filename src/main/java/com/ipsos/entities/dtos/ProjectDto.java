@@ -3,11 +3,9 @@ package com.ipsos.entities.dtos;
 import com.ipsos.entities.Task;
 import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -16,7 +14,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ProjectDto {
     @Size(max = 50)

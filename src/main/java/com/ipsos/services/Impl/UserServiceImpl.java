@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean isValidUsername(String username) {
-        return username.trim() != "" && username.matches(USERNAME_REGEX);
+        return !username.trim().equals("") && username.matches(USERNAME_REGEX);
     }
 
     public boolean isValidPassword(String password) {
-        return password.trim() != "" && password.matches(PASSWORD_REGEX);
+        return !password.trim().equals("") && password.matches(PASSWORD_REGEX);
     }
 
     @Override
@@ -109,8 +109,8 @@ public class UserServiceImpl implements UserService {
 
         Optional<Long> assignedProjectId = user.getProjects()
                 .stream()
-                .filter(p -> p.getId().equals(projectId))
                 .map(Project::getId)
+                .filter(id -> id.equals(projectId))
                 .findFirst();
 
         if (assignedProjectId.isPresent()) {
@@ -135,8 +135,8 @@ public class UserServiceImpl implements UserService {
 
         Optional<Long> assignedProjectId = user.getProjects()
                 .stream()
-                .filter(p -> p.getId().equals(projectId))
                 .map(Project::getId)
+                .filter(id -> id.equals(projectId))
                 .findFirst();
 
         if(assignedProjectId.isEmpty()) {
