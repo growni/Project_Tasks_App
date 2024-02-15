@@ -2,26 +2,21 @@ package com.ipsos.entities.dtos;
 
 
 import com.ipsos.entities.Project;
-import com.ipsos.exceptions.InvalidDataException;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ipsos.constants.Errors.*;
-import static com.ipsos.constants.Regex.PASSWORD_REGEX;
-import static com.ipsos.constants.Regex.USERNAME_REGEX;
+import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
 
@@ -35,10 +30,14 @@ public class UserDto {
 
     private List<Project> projects;
 
+    public UserDto() {
+        this.projects = new ArrayList<>();
+    }
+
     public UserDto(String username, String password) {
+        this();
         this.setUsername(username);
         this.setPassword(password);
-        this.projects = new ArrayList<>();
     }
 
 }

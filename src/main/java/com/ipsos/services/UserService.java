@@ -11,5 +11,8 @@ import java.util.Optional;
 public interface UserService {
     User createUser(UserDto userDto);
     User getById(Long id);
+    User getByUsername(String username);
+    void assignProject(Long userId, Long projectId);
+    void removeProject(Long userId, Long projectId);
 
 }

@@ -34,11 +34,11 @@ public class Project extends BaseEntity{
     @Column(name = "due_date")
     private LocalDate dueDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Task> tasks;
 
 }

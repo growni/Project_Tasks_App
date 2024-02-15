@@ -1,5 +1,6 @@
 package com.ipsos.entities.dtos;
 
+import com.ipsos.entities.Task;
 import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,11 +26,17 @@ public class ProjectDto {
     private Status status;
     private Priority priority;
     private LocalDate dueDate;
+    private List<Task> tasks;
 
-    public ProjectDto(String name) {
+    public ProjectDto() {
         this.status = Status.NOT_STARTED;
         this.priority = Priority.LOW;
-        this.name = name;
         this.dueDate = LocalDate.now();
+        this.tasks = new ArrayList<>();
+    }
+
+    public ProjectDto(String name) {
+        this();
+        this.name = name;
     }
 }
