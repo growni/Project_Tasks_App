@@ -49,17 +49,17 @@ public class Runner implements ApplicationRunner {
 //        this.taskService.createTask(taskDto);
 //        this.taskService.createTask(taskDto2);
 ////
-        User alex = this.userService.getById(1L);
-        User kiro = this.userService.getById(2L);
-        Project motleyProject = this.projectService.getById(1L);
-        Project browniProject = this.projectService.getById(2L);
-
-        Task dummyData = this.taskService.getById(1L);
-        Task MRT = this.taskService.getById(2L);
+//        User alex = this.userService.getById(1L);
+//        User kiro = this.userService.getById(2L);
+//        Project motleyProject = this.projectService.getById(1L);
+//        Project browniProject = this.projectService.getById(2L);
 //
-        this.projectService.addTask(motleyProject.getId(), dummyData);
-        this.projectService.addTask(browniProject.getId(), dummyData);
-        this.taskService.deleteTask(dummyData.getId());
+//        Task dummyData = this.taskService.getById(1L);
+//        Task MRT = this.taskService.getById(2L);
+////
+//        this.projectService.addTask(motleyProject.getId(), dummyData);
+//        this.projectService.addTask(browniProject.getId(), dummyData);
+//        this.taskService.deleteTask(dummyData.getId());
 
     }
 }
