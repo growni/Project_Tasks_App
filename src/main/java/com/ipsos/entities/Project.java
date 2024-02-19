@@ -34,7 +34,7 @@ public class Project extends BaseEntity{
     @Column(name = "due_date")
     private LocalDate dueDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 

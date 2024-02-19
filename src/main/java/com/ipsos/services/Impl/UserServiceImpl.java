@@ -1,27 +1,23 @@
 package com.ipsos.services.Impl;
 
-import com.ipsos.entities.Project;
+import com.ipsos.entities.Role;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
 import com.ipsos.exceptions.InvalidDataException;
-import com.ipsos.exceptions.UserAlreadyAssignedException;
 import com.ipsos.exceptions.UsernameAlreadyExistsException;
 import com.ipsos.repositories.ProjectRepository;
+import com.ipsos.repositories.RoleRepository;
 import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.UserService;
-import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import java.util.List;
 import java.util.Optional;
 
-import static com.ipsos.constants.ErrorMessages.AuthOperations.INVALID_PASSWORD;
-import static com.ipsos.constants.ErrorMessages.AuthOperations.INVALID_USERNAME;
-import static com.ipsos.constants.ErrorMessages.AuthOperations.USER_EXISTS;
-import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
+import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USERNAME_NOT_FOUND;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
 import static com.ipsos.constants.Regex.PASSWORD_REGEX;
@@ -32,19 +28,21 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final RoleRepository roleRepository;
 
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ProjectRepository projectRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, ProjectRepository projectRepository, RoleRepository roleRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.roleRepository = roleRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User createUser(UserDto userDto) {
+    public User registerUser(UserDto userDto) {
 
         validateUserDto(userDto);
 
@@ -56,6 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUserDto(UserDto userDto) {
+
         if(!isValidUsername(userDto.getUsername())) {
             throw new InvalidDataException(INVALID_USERNAME);
         }
@@ -99,56 +98,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void assignProject(Long userId, Long projectId) {
-        User user = this.userRepository.findById(userId)
+    public void addRoleToUser(String username, Role role) {
+        User user = this.userRepository.getByUsername(username)
                 .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
 
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
-        Optional<Long> assignedProjectId = user.getProjects()
-                .stream()
-                .map(Project::getId)
-                .filter(id -> id.equals(projectId))
-                .findFirst();
-
-        if (assignedProjectId.isPresent()) {
-            throw new UserAlreadyAssignedException(String.format(USER_ALREADY_ASSIGNED, project.getName(), user.getUsername()));
-        }
-
-        project.setUser(user);
-        user.getProjects().add(project);
-
-        this.projectRepository.save(project);
+        user.getRoles().add(role);
         this.userRepository.save(user);
     }
 
     @Override
-    @Transactional
-    public void removeProject(Long userId, Long projectId) {
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
-
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
-        Optional<Long> assignedProjectId = user.getProjects()
-                .stream()
-                .map(Project::getId)
-                .filter(id -> id.equals(projectId))
-                .findFirst();
-
-        if(assignedProjectId.isEmpty()) {
-            throw new EntityMissingFromDatabase(PROJECT_NOT_ASSIGNED_TO_USER);
-        }
-
-        user.getProjects().remove(project);
-        project.setUser(null);
-
-        this.userRepository.save(user);
-        this.projectRepository.save(project);
+    public List<User> getAllUsers() {
+        return this.userRepository.findAll();
     }
+
 
 }
 

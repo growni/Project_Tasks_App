@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 public class TaskDto {
-
+    private Long id;
     private String description;
     private LocalDate due_date;
     private Priority priority;
@@ -30,4 +30,5 @@ public class TaskDto {
         this();
         this.description = description;
     }
+
 }

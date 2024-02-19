@@ -29,12 +29,83 @@
         p {
             text-align: center;
         }
+
+        .add-project-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-project-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 <div class="container">
   <h2>Welcome to Dashboard</h2>
-  <p>This is a simple dashboard page to be customized later</p>
+  <div>
+    <h3>Projects</h3>
+    <ul>
+      <!-- Iterate over each project -->
+      <li th:each="project : ${projects}">
+        <!-- Display project properties -->
+        <div>
+          <p><strong>Name:</strong> <span th:text="${project.name}"></span></p>
+          <p><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></p>
+          <p><strong>Status:</strong> <span th:text="${project.status}"></span></p>
+          <p><strong>Priority:</strong> <span th:text="${project.priority}"></span></p>
+          <p><strong>Due Date:</strong> <span th:text="${project.dueDate}"></span></p>
+          <p><strong>User:</strong> <span th:text="${project.user?.username}"></span></p>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="addProjectForm" style="display:none;">
+    <h3>Add Project</h3>
+    <form id="projectForm" th:action="@{/dashboard}" th:object="${projectDto}" method="post">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required th:field="*{name}"><br>
+
+      <label for="jobNumber">Job Number:</label>
+      <input type="text" id="jobNumber" name="jobNumber" th:field="*{jobNumber}"><br>
+
+      <label for="status">Status:</label>
+      <select id="status" name="status" th:field="*{status}">
+        <option value="NOT_STARTED">Not started</option>
+        <option value="MRT">MRT</option>
+        <option value="IN_PROGRESS">In progress</option>
+        <option value="COMPLETED">Completed</option>
+      </select><br>
+
+      <label for="priority">Priority:</label>
+      <select id="priority" name="priority" th:field="*{priority}">
+        <option value="LOW">Low</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="HIGH">High</option>
+      </select><br>
+
+      <label for="dueDate">Due Date:</label>
+      <input type="date" id="dueDate" name="dueDate" th:field="*{dueDate}"><br>
+
+      <button type="submit">Create Project</button>
+    </form>
+
+  </div>
+  <button id="addProjectButton" class="add-project-btn" onclick="showProjectForm()">Add Project</button>
 </div>
+
+<script>
+    function showProjectForm() {
+        var form = document.getElementById("addProjectForm");
+        form.style.display = "block";
+    }
+</script>
 </body>
 </html>

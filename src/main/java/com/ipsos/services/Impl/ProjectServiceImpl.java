@@ -2,30 +2,39 @@ package com.ipsos.services.Impl;
 
 import com.ipsos.entities.Project;
 import com.ipsos.entities.Task;
+import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.ProjectDto;
 import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
+import com.ipsos.exceptions.UserAlreadyAssignedException;
 import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.TaskRepository;
+import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.ProjectService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
-import static com.ipsos.constants.ErrorMessages.ProjectOperations.PROJECT_NOT_FOUND;
+import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
+import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, ModelMapper modelMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -95,10 +104,77 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = this.projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
 
-        task.setProject(project);
         project.getTasks().add(task);
+        this.projectRepository.save(project);
 
+        task.setProject(project);
         this.taskRepository.save(task);
+    }
+
+    @Override
+    public List<ProjectDto> getAllProjectsDto() {
+        List<Project> allProjects = this.projectRepository.findAll();
+
+        List<ProjectDto> allProjectsDto = new ArrayList<>();
+        for (Project project : allProjects) {
+            ProjectDto dto = this.modelMapper.map(project, ProjectDto.class);
+            allProjectsDto.add(dto);
+        }
+
+        return  allProjectsDto;
+
+    }
+
+    @Override
+    public ProjectDto getByIdDto(Long projectId) {
+        Project project = getById(projectId);
+
+        ProjectDto projectDto = this.modelMapper.map(project, ProjectDto.class);
+
+        return projectDto;
+    }
+
+    @Override
+    @Transactional
+    public void assignUser(String username, Long projectId) {
+        User user = this.userRepository.getByUsername(username)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        Project project = this.projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+
+        User assignedUser = project.getUser();
+
+        if(user == assignedUser) {
+            throw new UserAlreadyAssignedException(String.format(USER_ALREADY_ASSIGNED, project.getName(), user.getUsername()));
+        }
+
+        project.setUser(user);
+        user.getProjects().add(project);
+
+        this.projectRepository.save(project);
+        this.userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void removeUser(String username, Long projectId) {
+        User user = this.userRepository.getByUsername(username)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        Project project = this.projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+
+        User assignedUser = project.getUser();
+
+        if(assignedUser == null || !assignedUser.equals(user)) {
+            throw new EntityMissingFromDatabase(PROJECT_NOT_ASSIGNED_TO_USER);
+        }
+
+        user.getProjects().remove(project);
+        project.setUser(null);
+
+        this.userRepository.save(user);
         this.projectRepository.save(project);
     }
 

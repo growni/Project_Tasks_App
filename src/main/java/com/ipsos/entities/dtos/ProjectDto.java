@@ -1,10 +1,10 @@
 package com.ipsos.entities.dtos;
 
 import com.ipsos.entities.Task;
+import com.ipsos.entities.User;
 import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +14,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class ProjectDto {
+    private Long id;
     @Size(max = 50)
     private String name;
     @Size(max = 15)
@@ -24,6 +24,7 @@ public class ProjectDto {
     private Priority priority;
     private LocalDate dueDate;
     private List<Task> tasks;
+    private User user;
 
     public ProjectDto() {
         this.status = Status.NOT_STARTED;
@@ -36,4 +37,32 @@ public class ProjectDto {
         this();
         this.name = name;
     }
+
+    public ProjectDto(String name, String jobNumber) {
+        this();
+        this.setName(name);
+        this.setJobNumber(jobNumber);
+    }
+    public ProjectDto(String name, String jobNumber, String status) {
+        this();
+        this.setName(name);
+        this.setJobNumber(jobNumber);
+        this.setStatus(Status.valueOf(status));
+    }
+    public ProjectDto(String name, String jobNumber, String status, String priority) {
+        this();
+        this.setName(name);
+        this.setJobNumber(jobNumber);
+        this.setStatus(Status.valueOf(status));
+        this.setPriority(Priority.valueOf(priority));
+    }
+
+    public ProjectDto(String name, String jobNumber, String status, String priority, LocalDate dueDate) {
+        this.setName(name);
+        this.setJobNumber(jobNumber);
+        this.setStatus(Status.valueOf(status));
+        this.setPriority(Priority.valueOf(priority));
+        this.setDueDate(dueDate);
+    }
+
 }

@@ -1,16 +1,19 @@
 package com.ipsos.services;
 
 
+import com.ipsos.entities.Role;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
 
+import java.util.List;
 
 
 public interface UserService {
-    User createUser(UserDto userDto);
+    User registerUser(UserDto userDto);
     User getById(Long id);
     User getByUsername(String username);
-    void assignProject(Long userId, Long projectId);
-    void removeProject(Long userId, Long projectId);
+    void addRoleToUser(String username, Role role);
+
+    List<User> getAllUsers();
 
 }

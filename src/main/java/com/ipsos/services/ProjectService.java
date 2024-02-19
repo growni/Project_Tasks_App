@@ -7,6 +7,7 @@ import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface ProjectService {
     Project createProject(ProjectDto projectDto);
@@ -17,7 +18,10 @@ public interface ProjectService {
     void updateStatus(Long projectId, Status status);
     void updatePriority(Long projectId, Priority priority);
     void addTask(Long projectId, Task task);
-   // void removeTask(Long projectId, Task task);
+   List<ProjectDto> getAllProjectsDto();
+   ProjectDto getByIdDto(Long projectId);
+   void assignUser(String username, Long projectId);
+   void removeUser(String username, Long projectId);
 
 
 }

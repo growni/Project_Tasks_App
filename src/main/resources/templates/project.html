@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details</title>
+  <!-- Add your CSS stylesheets here -->
+</head>
+<body>
+<h1>Project Details</h1>
+<!-- Display project information -->
+<div>
+  <h2>Project Information</h2>
+  <p>Name: <span th:text="${project.name}"></span></p>
+  <p>Job Number: <span th:text="${project.jobNumber}"></span></p>
+  <p>Status: <span th:text="${project.status}"></span></p>
+  <p>Priority: <span th:text="${project.priority}"></span></p>
+  <p>Due Date: <span th:text="${project.dueDate}"></span></p>
+</div>
+
+<p th:if="${project.user != null}">Assigned User: <span th:text="${project.user?.username}"></span></p>
+<p th:unless="${project.user != null}">No user assigned to this project</p>
+
+<form th:action="@{/project/assignUser}" method="post">
+  <input type="hidden" name="projectId" th:value="${project.id}" />
+  <label for="username">Assign User:</label>
+  <select id="username" name="username">
+    <option th:each="user : ${users}" th:value="${user.username}" th:text="${user.username}"></option>
+  </select>
+  <button type="submit">Assign User</button>
+</form>
+</div>
+
+<!-- Task management section -->
+<div>
+  <h2>Tasks</h2>
+  <ul>
+    <!-- Iterate over tasks and display them -->
+    <li th:each="task : ${project.tasks}">
+      <span>Description: <span th:text="${task.description}"></span></span><br>
+      <span>Status: <span th:text="${task.status}"></span></span><br>
+      <span>Priority: <span th:text="${task.priority}"></span></span><br>
+      <span>Due Date: <span th:text="${task.dueDate}"></span></span><br>
+
+      <!-- Add buttons for editing or deleting tasks -->
+      <button>Edit</button>
+      <form th:action="@{/project/deleteTask}" method="post">
+        <input type="hidden" name="taskId" th:value="${task.id}" />
+        <input type="hidden" name="projectId" th:value="${project.id}" />
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+  </ul>
+
+  <!-- Form to add a new task -->
+  <form th:action="@{/project/addTask}" method="post">
+    <input type="hidden" name="projectId" th:value="${project.id}" />
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" placeholder="Enter task description" required />
+
+    <label for="status">Status:</label>
+    <select id="status" name="status">
+      <option value="NOT_STARTED">Not started</option>
+      <option value="IN_PROGRESS">In progress</option>
+      <option value="COMPLETED">Completed</option>
+    </select>
+
+    <label for="priority">Priority:</label>
+    <select id="priority" name="priority">
+      <option value="LOW">Low</option>
+      <option value="MEDIUM">Medium</option>
+      <option value="HIGH">High</option>
+    </select>
+
+    <label for="dueDate">Due Date:</label>
+    <input type="date" id="dueDate" name="dueDate" />
+
+    <button type="submit">Add Task</button>
+  </form>
+</div>
+
+</body>
+</html>
