@@ -69,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
     private void validateTaskDto(TaskDto taskDto) {
         String description = taskDto.getDescription();
 
-        if(description == null || description.isEmpty() || description.length() > 250) {
+        if(description == null || description.trim().isEmpty() || description.length() > 250) {
             throw new InvalidDataException(TASK_DESCRIPTION_CANT_BE_NULL);
         }
 
@@ -89,6 +89,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTask(TaskDto taskDto) {
+
+        validateTaskDto(taskDto);
 
         Task currentTask = this.taskRepository.findById(taskDto.getId())
                 .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));

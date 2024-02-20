@@ -2,6 +2,7 @@ package com.ipsos.constants;
 
 public enum Regex {
     ;
-    public static final String USERNAME_REGEX = "^[a-zA-Z0-9._-]{3,15}$";
+    public static final String USERNAME_REGEX = "^(?!\\s*$)[\\p{L}'\\-.]{2,50}$";
     public static final String PASSWORD_REGEX = "^(?!.*\\s).{6,20}$";
+    public static final String NAME_REGEX = "^(?!\\s*$).{2,50}$";
 }

@@ -4,7 +4,6 @@ import com.ipsos.entities.Task;
 import com.ipsos.entities.User;
 import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +15,7 @@ import java.util.List;
 @Setter
 public class ProjectDto {
     private Long id;
-    @Size(max = 50)
     private String name;
-    @Size(max = 15)
     private String jobNumber;
     private Status status;
     private Priority priority;

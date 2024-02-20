@@ -7,6 +7,7 @@ import com.ipsos.entities.dtos.ProjectDto;
 import com.ipsos.entities.enums.Priority;
 import com.ipsos.entities.enums.Status;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
+import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.exceptions.UserAlreadyAssignedException;
 import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.TaskRepository;
@@ -23,6 +24,7 @@ import java.util.List;
 import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
 import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
+import static com.ipsos.constants.Regex.NAME_REGEX;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -41,10 +43,34 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project createProject(ProjectDto projectDto) {
 
+        validateProjectDto(projectDto);
+
         Project project = this.modelMapper.map(projectDto, Project.class);
 
         this.projectRepository.save(project);
         return project;
+    }
+
+    private boolean validateProjectDto(ProjectDto projectDto) {
+        String name = projectDto.getName();
+
+        if(name.trim().isEmpty() || !name.matches(NAME_REGEX)) {
+            throw new InvalidDataException(INVALID_PROJECT_NAME);
+        }
+
+        LocalDate dueDate = projectDto.getDueDate();
+        LocalDate currentDate = LocalDate.now();
+
+        if(dueDate == null) {
+            dueDate = LocalDate.now();
+        }
+
+        if(dueDate.isBefore(currentDate)) {
+            throw new IllegalArgumentException(DATE_MUST_BE_IN_FUTURE);
+        }
+
+        return true;
+
     }
 
     @Override
@@ -69,6 +95,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateProject(ProjectDto projectDto) {
+
+        validateProjectDto(projectDto);
+
         Project currentProject = this.projectRepository.findById(projectDto.getId())
                 .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
 
