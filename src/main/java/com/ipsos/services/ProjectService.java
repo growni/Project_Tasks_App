@@ -14,6 +14,8 @@ public interface ProjectService {
     void updateJobNumber(Long projectId, String jobNumber);
 
     Project getById(Long id);
+
+    void updateProject(ProjectDto projectDto);
     void updateDueDate(Long projectId, LocalDate date);
     void updateStatus(Long projectId, Status status);
     void updatePriority(Long projectId, Priority priority);

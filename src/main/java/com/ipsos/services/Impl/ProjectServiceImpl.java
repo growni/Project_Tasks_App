@@ -68,6 +68,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public void updateProject(ProjectDto projectDto) {
+        Project currentProject = this.projectRepository.findById(projectDto.getId())
+                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+
+        if(currentProject.getUser() != null) {
+            projectDto.setUser(currentProject.getUser());
+        }
+
+        this.modelMapper.map(projectDto, currentProject);
+        this.projectRepository.save(currentProject);
+    }
+
+    @Override
     public void updateDueDate(Long projectId, LocalDate newDate) {
         Project project = this.projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));

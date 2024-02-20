@@ -41,4 +41,17 @@ public class Project extends BaseEntity{
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Task> tasks;
 
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id= '" + getId() + '\'' +
+                "name='" + name + '\'' +
+                ",\n jobNumber='" + jobNumber + '\'' +
+                ",\n status=" + status +
+                ",\n priority=" + priority +
+                ",\n dueDate=" + dueDate +
+                ",\n user=" + user +
+                ",\n tasks=" + tasks +
+                '}';
+    }
 }

@@ -35,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests((auth) ->
-                    auth.requestMatchers("/register", "/login", "/dashboard", "/project").permitAll()
+                    auth.requestMatchers("/register", "/login", "/dashboard", "/project", "/project/2").permitAll()
                             .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -46,5 +46,32 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll)
                 .build();
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.authorizeRequests()
+//                .requestMatchers(
+//                        PathRequest
+//                                .toStaticResources()
+//                                .atCommonLocations()
+//                ).permitAll()
+//                .requestMatchers("/", "/routes/", "/api/").permitAll()
+//                .requestMatchers("/users/login", "/users/register").anonymous()
+//                .requestMatchers("/users/profile").authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/users/login")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+//                .defaultSuccessUrl("/")
+//                .failureForwardUrl("/users/login?error=true")
+//                .and()
+//                .logout()
+//                .logoutUrl("/users/logout")
+//                .clearAuthentication(true)
+//                .deleteCookies("JSESSIONID")
+//                .logoutSuccessUrl("/");
+//        return http.build();
+//    }
 
 }

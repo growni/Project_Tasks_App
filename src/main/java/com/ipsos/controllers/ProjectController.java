@@ -38,11 +38,12 @@ public class ProjectController {
         return "project";
     }
 
-    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.POST)
-    public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) {
 
-        Task task = this.taskService.createTask(taskDto);
-        this.projectService.addTask(projectId, task);
+
+    @RequestMapping(value = "/project/assignUser", method = RequestMethod.POST)
+    public String assignUser(@RequestParam Long projectId, @RequestParam String username) {
+
+        this.projectService.assignUser(username, projectId);
 
         return "redirect:/project/" + projectId;
     }
@@ -54,10 +55,32 @@ public class ProjectController {
         return "redirect:/project/" + projectId;
     }
 
-    @RequestMapping(value = "/project/assignUser", method = RequestMethod.POST)
-    public String assignUser(@RequestParam Long projectId, @RequestParam String username) {
+    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.POST)
+    public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) {
 
-        this.projectService.assignUser(username, projectId);
+        Task task = this.taskService.createTask(taskDto);
+        this.projectService.addTask(projectId, task);
+
+        return "redirect:/project/" + projectId;
+    }
+
+
+    @RequestMapping(value = "/project/editTask", method = RequestMethod.POST)
+    public String editTask(@RequestParam Long taskId, @RequestParam Long projectId, @ModelAttribute TaskDto taskDto) {
+
+        taskDto.setId(taskId);
+        this.taskService.updateTask(taskDto);
+
+        return "redirect:/project/" + projectId;
+    }
+
+    @RequestMapping(value = "/project/editProject", method = RequestMethod.POST)
+    public String editProject(@RequestParam Long projectId, @ModelAttribute ProjectDto projectDto) {
+
+        projectDto.setId(projectId);
+
+        System.out.println(projectDto);
+        this.projectService.updateProject(projectDto);
 
         return "redirect:/project/" + projectId;
     }

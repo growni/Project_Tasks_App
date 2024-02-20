@@ -18,6 +18,42 @@
   <p>Due Date: <span th:text="${project.dueDate}"></span></p>
 </div>
 
+<form id="editForm" th:action="@{/project/editProject}" method="post" style="display: none;">
+  <label for="editName">Name:</label>
+  <input type="text" id="editName" name="name" th:value="${project.name}" required /><br>
+
+  <input type="hidden" id="editProjectId" name="projectId" th:value="${project.id}" />
+  <input type="hidden" id="editProjectUser" name="projectUser" th:value="${project.user}" />
+
+  <label for="editJobNumber">Job Number:</label>
+  <input type="text" id="editJobNumber" name="jobNumber" th:value="${project.jobNumber}" /><br>
+
+  <label for="editStatus">Status:</label>
+  <select id="editStatus" name="status">
+    <option value="NOT_STARTED" th:selected="${project.status == 'NOT_STARTED'}">Not started</option>
+    <option value="IN_PROGRESS" th:selected="${project.status == 'IN_PROGRESS'}">In Progress</option>
+    <option value="COMPLETED" th:selected="${project.status == 'COMPLETED'}">Completed</option>
+  </select><br>
+
+  <label for="editPriority">Priority:</label>
+  <select id="editPriority" name="priority">
+    <option value="LOW" th:selected="${project.priority == 'LOW'}">Low</option>
+    <option value="MEDIUM" th:selected="${project.priority == 'MEDIUM'}">Medium</option>
+    <option value="HIGH" th:selected="${project.priority == 'HIGH'}">High</option>
+  </select><br>
+
+  <label for="editDueDate">Due Date:</label>
+  <input type="date" id="editDueDate" name="dueDate" th:value="${project.dueDate}" required /><br>
+
+
+
+  <!-- Display buttons within the form -->
+  <button type="submit">Save</button>
+</form>
+
+<!-- "Edit" button to toggle the form visibility -->
+<button id="editButton" onclick="toggleEdit()">Edit</button>
+
 <p th:if="${project.user != null}">Assigned User: <span th:text="${project.user?.username}"></span></p>
 <p th:unless="${project.user != null}">No user assigned to this project</p>
 
@@ -40,16 +76,40 @@
       <span>Description: <span th:text="${task.description}"></span></span><br>
       <span>Status: <span th:text="${task.status}"></span></span><br>
       <span>Priority: <span th:text="${task.priority}"></span></span><br>
-      <span>Due Date: <span th:text="${task.dueDate}"></span></span><br>
 
       <!-- Add buttons for editing or deleting tasks -->
-      <button>Edit</button>
+      <button onclick="showEditForm('${task.id}')">Edit</button>
       <form th:action="@{/project/deleteTask}" method="post">
         <input type="hidden" name="taskId" th:value="${task.id}" />
         <input type="hidden" name="projectId" th:value="${project.id}" />
         <button type="submit">Delete</button>
       </form>
+
+      <!-- Edit form (hidden by default) -->
+      <form id="editForm-${task.id}" th:action="@{/project/editTask}" method="post" style="display: none;">
+        <input type="hidden" name="taskId" th:value="${task.id}" />
+        <input type="hidden" name="projectId" th:value="${project.id}" />
+        <label for="description-${task.id}">Description:</label>
+        <input type="text" id="description-${task.id}" name="description" th:value="${task.description}" /><br>
+
+        <label for="status-${task.id}">Status:</label>
+        <select id="status-${task.id}" name="status">
+          <option value="NOT_STARTED" th:selected="${task.status == 'NOT_STARTED'}">Pending</option>
+          <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">In Progress</option>
+          <option value="COMPLETED" th:selected="${task.status == 'COMPLETED'}">Completed</option>
+        </select><br>
+
+        <label for="priority-${task.id}">Priority:</label>
+        <select id="priority-${task.id}" name="priority">
+          <option value="LOW" th:selected="${task.priority == 'LOW'}">Low</option>
+          <option value="MEDIUM" th:selected="${task.priority == 'MEDIUM'}">Medium</option>
+          <option value="HIGH" th:selected="${task.priority == 'HIGH'}">High</option>
+        </select><br>
+
+        <button type="submit">Save</button>
+      </form>
     </li>
+
   </ul>
 
   <!-- Form to add a new task -->
@@ -73,12 +133,37 @@
       <option value="HIGH">High</option>
     </select>
 
-    <label for="dueDate">Due Date:</label>
-    <input type="date" id="dueDate" name="dueDate" />
-
     <button type="submit">Add Task</button>
   </form>
 </div>
+
+<script>
+    function showEditForm(taskId) {
+    var editForms = document.querySelectorAll("[id^='editForm-']");
+  for (var i = 0; i < editForms.length; i++) {
+
+    var form = editForms[i];
+    if (form.id === `editForm-${taskId}`) {
+      form.style.display = 'block';
+    } else {
+      form.style.display = 'none';
+    }
+  }
+}
+
+function toggleEdit() {
+  var editForm = document.getElementById('editForm');
+  var editButton = document.getElementById('editButton');
+
+  if (editForm.style.display === 'none') {
+    editForm.style.display = 'block';
+    editButton.style.display = 'none';
+  } else {
+    editForm.style.display = 'none';
+    editButton.style.display = 'inline';
+  }
+}
+</script>
 
 </body>
 </html>

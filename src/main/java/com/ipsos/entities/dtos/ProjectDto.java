@@ -65,4 +65,17 @@ public class ProjectDto {
         this.setDueDate(dueDate);
     }
 
+    @Override
+    public String toString() {
+        return "ProjectDto{" +
+                "id=" + id +
+                ",\n name='" + name + '\'' +
+                ",\n jobNumber='" + jobNumber + '\'' +
+                ",\n status=" + status +
+                ",\n priority=" + priority +
+                ",\n dueDate=" + dueDate +
+                ",\n tasks=" + tasks +
+                ",\n user=" + user +
+                '}';
+    }
 }

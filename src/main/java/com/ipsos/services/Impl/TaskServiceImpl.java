@@ -12,10 +12,8 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
 import static com.ipsos.constants.ErrorMessages.TaskOperations.TASK_DESCRIPTION_CANT_BE_NULL;
 import static com.ipsos.constants.ErrorMessages.TaskOperations.TASK_NOT_FOUND;
 
@@ -68,31 +66,11 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository.save(task);
     }
 
-    @Override
-    public void updateDueDate(Long taskId, LocalDate newDate) {
-        Task task = this.taskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));
-
-        LocalDate currentDate = LocalDate.now();
-        if(newDate.isBefore(currentDate)) {
-            throw new IllegalArgumentException(DATE_MUST_BE_IN_FUTURE);
-        }
-
-        task.setDueDate(newDate);
-        this.taskRepository.save(task);
-    }
-
     private void validateTaskDto(TaskDto taskDto) {
         String description = taskDto.getDescription();
 
         if(description == null || description.isEmpty() || description.length() > 250) {
             throw new InvalidDataException(TASK_DESCRIPTION_CANT_BE_NULL);
-        }
-
-        LocalDate dueDate = taskDto.getDue_date();
-
-        if(dueDate != null && dueDate.isBefore(LocalDate.now())) {
-            throw new InvalidDataException(DATE_MUST_BE_IN_FUTURE);
         }
 
     }
@@ -107,5 +85,16 @@ public class TaskServiceImpl implements TaskService {
 
         return optionalTask.get();
 
+    }
+
+    @Override
+    public void updateTask(TaskDto taskDto) {
+
+        Task currentTask = this.taskRepository.findById(taskDto.getId())
+                .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));
+
+        this.modelMapper.map(taskDto, currentTask);
+
+        this.taskRepository.save(currentTask);
     }
 }

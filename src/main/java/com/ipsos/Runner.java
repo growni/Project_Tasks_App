@@ -14,8 +14,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 
 @Component
 public class Runner implements ApplicationRunner {
@@ -74,10 +72,7 @@ public class Runner implements ApplicationRunner {
 
         //this.projectService.assignUser("Aleksandar", 1L);
         //this.projectService.removeUser("Aleksandar", 1L);
-        List<User> users = this.userService.getAllUsers();
-        for (User user : users) {
-            System.out.println(user.getUsername());
-        }
+
 
 
     }
