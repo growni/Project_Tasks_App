@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USERNAME_NOT_FOUND;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
         String hashedPassword = this.passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(hashedPassword);
-
+        userDto.setRoles(Set.of(roleRepository.findByName("ROLE_DEVELOPER")));
         User newUser = this.modelMapper.map(userDto, User.class);
         return this.userRepository.save(newUser);
     }

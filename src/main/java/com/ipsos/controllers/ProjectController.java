@@ -7,6 +7,7 @@ import com.ipsos.entities.dtos.TaskDto;
 import com.ipsos.services.ProjectService;
 import com.ipsos.services.TaskService;
 import com.ipsos.services.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_LEADER')")
     public String projectView(@PathVariable Long projectId, Model model) {
 
         ProjectDto projectDto = this.projectService.getByIdDto(projectId);

@@ -39,6 +39,11 @@ public class Runner implements ApplicationRunner {
 
 
     public void operations() {
+        Role ADMIN_ROLE = this.roleService.getByName("ROLE_ADMIN");
+        Role DEVELOPER_ROLE = this.roleService.getByName("ROLE_DEVELOPER");
+        Role TL_ROLE = this.roleService.getByName("ROLE_LEADER");
+
+
         User alex = this.userService.getById(1L);
         User kiro = this.userService.getById(2L);
         User adi = this.userService.getById(3L);
@@ -49,7 +54,6 @@ public class Runner implements ApplicationRunner {
         User marto = this.userService.getById(8L);
         User marti = this.userService.getById(9L);
         User preska = this.userService.getById(10L);
-        User admin = this.userService.getById(11L);
 
         Project motleyProject = this.projectService.getById(1L);
         Project browniProject = this.projectService.getById(2L);
@@ -65,10 +69,6 @@ public class Runner implements ApplicationRunner {
 //        Task waiting = this.taskService.getById(5L);
 //        Task validationLogs = this.taskService.getById(6L);
 
-        Role ADMIN_ROLE = this.roleService.getByName("ADMIN");
-        Role DEVELOPER_ROLE = this.roleService.getByName("DEVELOPER");
-        Role QA_ROLE = this.roleService.getByName("QA");
-        Role TL_ROLE = this.roleService.getByName("TL");
 
         //this.projectService.assignUser("Aleksandar", 1L);
         //this.projectService.removeUser("Aleksandar", 1L);
@@ -87,7 +87,6 @@ public class Runner implements ApplicationRunner {
         UserDto userDto8 = new UserDto("Martin", "Test_Password", "Test_Password");
         UserDto userDto9 = new UserDto("Martina", "Test_Password", "Test_Password");
         UserDto userDto10 = new UserDto("Presyian", "Test_Password", "Test_Password");
-        UserDto userDto11 = new UserDto("admin", "123123", "123123");
 
         this.userService.registerUser(userDto);
         this.userService.registerUser(userDto2);
@@ -99,13 +98,6 @@ public class Runner implements ApplicationRunner {
         this.userService.registerUser(userDto8);
         this.userService.registerUser(userDto9);
         this.userService.registerUser(userDto10);
-        this.userService.registerUser(userDto11);
-
-        this.roleService.createRole("ADMIN");
-        this.roleService.createRole("DEVELOPER");
-        this.roleService.createRole("QA");
-        this.roleService.createRole("TL");
-
 
         ProjectDto projectDto = new ProjectDto("Motley");
         ProjectDto projectDto2 = new ProjectDto("Browni");

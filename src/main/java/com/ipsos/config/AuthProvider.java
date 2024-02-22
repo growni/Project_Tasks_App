@@ -8,10 +8,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthProvider implements AuthenticationProvider {
@@ -29,15 +33,22 @@ public class AuthProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
+        System.out.println(username);
+        System.out.println(password);
 
         User user = this.userRepository.getByUsername(username)
                 .orElseThrow(() -> new BadCredentialsException("1000"));
+
 
         if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("1000");
         }
 
-        return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+
+        return new UsernamePasswordAuthenticationToken(username, password, authorities);
 
     }
 

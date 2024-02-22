@@ -28,12 +28,25 @@ public class User extends BaseEntity implements UserDetails {
     @Transient
     private String confirmPassword;
 
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+    private boolean enabled;
+
+    private boolean tokenExpired;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Project> projects;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

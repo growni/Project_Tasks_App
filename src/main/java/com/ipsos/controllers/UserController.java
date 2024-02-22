@@ -2,6 +2,11 @@ package com.ipsos.controllers;
 
 import com.ipsos.entities.dtos.UserDto;
 import com.ipsos.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +23,7 @@ import static com.ipsos.constants.ErrorMessages.AuthOperations.CONFIRM_PASSWORD_
 public class UserController {
 
     private final UserService userService;
+    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -46,6 +52,23 @@ public class UserController {
         ModelAndView view = new ModelAndView();
         view.setViewName("register");
         return view;
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutSuccess() {
+        printUserRoles();
+        return "logout-success";
+    }
+
+    public void printUserRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
+        if (authentication != null && authentication.isAuthenticated()) {
+            System.out.println("Username: " + authentication.getName());
+            authentication.getAuthorities().forEach(authority -> {
+                System.out.println("User has role: " + authority.getAuthority());
+            });
+        }
     }
 
 }

@@ -27,8 +27,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getByName(String roleName) {
-        Role role = this.roleRepository.findByName(roleName)
-                .orElseThrow(() -> new EntityMissingFromDatabase(String.format(ROLE_NOT_FOUND, roleName)));
+        Role role = this.roleRepository.findByName(roleName);
+
+        if(role == null) {
+            throw new EntityMissingFromDatabase(String.format(ROLE_NOT_FOUND, roleName));
+        }
 
         return role;
     }
