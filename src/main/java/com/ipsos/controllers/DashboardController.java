@@ -1,5 +1,6 @@
 package com.ipsos.controllers;
 
+import com.ipsos.entities.Project;
 import com.ipsos.entities.dtos.ProjectDto;
 import com.ipsos.services.ProjectService;
 import com.ipsos.services.TaskService;
@@ -34,10 +35,14 @@ public class DashboardController {
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String dashboardPage(Model model) {
 
-        List<ProjectDto> projects = this.projectService.getAllProjectsDto();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        List<Project> projects = this.projectService.findProjectByUsername(username);
+
         model.addAttribute("projects", projects);
 
-        model.addAttribute("projectDto", new ProjectDto());
+        model.addAttribute("projectDto", new Project());
 
 //        if(userDetails == null) {
 //            return "redirect:/login";

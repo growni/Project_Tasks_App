@@ -11,4 +11,5 @@ public enum AuthOperations {
     public static final String CONFIRM_PASSWORD_INCORRECT = "Password and confirmation password not matching.";
     public static final String USERNAME_LENGTH_ERROR = "Username must be between 2 and 20 characters long.";
     public static final String PASSWORD_LENGTH_ERROR = "Password must be between 6 and 20 characters long.";
+    public static final String ACTION_NOT_ALLOWED = "You are not allowed to perform this action.";
 }

@@ -1,6 +1,7 @@
 package com.ipsos.services.Impl;
 
 import com.ipsos.entities.Project;
+import com.ipsos.entities.Role;
 import com.ipsos.entities.Task;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.ProjectDto;
@@ -15,11 +16,15 @@ import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.ProjectService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
 import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
@@ -38,6 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+
     }
 
     @Override
@@ -151,6 +157,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         task.setProject(project);
         this.taskRepository.save(task);
+
+
     }
 
     @Override
@@ -218,6 +226,11 @@ public class ProjectServiceImpl implements ProjectService {
 
         this.userRepository.save(user);
         this.projectRepository.save(project);
+    }
+
+    @Override
+    public List<Project> findProjectByUsername(String username) {
+        return this.projectRepository.findByUsername(username);
     }
 
 }

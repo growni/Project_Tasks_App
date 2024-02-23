@@ -24,6 +24,7 @@ public interface ProjectService {
    ProjectDto getByIdDto(Long projectId);
    void assignUser(String username, Long projectId);
    void removeUser(String username, Long projectId);
+   List<Project> findProjectByUsername(String username);
 
 
 }

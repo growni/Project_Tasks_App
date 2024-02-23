@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Controller
@@ -26,7 +27,6 @@ public class ProjectController {
     public ProjectController(ProjectService projectService, TaskService taskService, UserService userService) {
         this.projectService = projectService;
         this.taskService = taskService;
-
         this.userService = userService;
     }
 
@@ -52,18 +52,23 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/project/deleteTask", method = RequestMethod.POST)
-    public String deleteTask(@RequestParam Long taskId, @RequestParam Long projectId) {
-        this.taskService.deleteTask(taskId);
+    public String deleteTask(@RequestParam Long taskId, @RequestParam Long projectId) throws AccessDeniedException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        this.taskService.deleteTask(projectId, taskId, authentication);
 
         return "redirect:/project/" + projectId;
     }
 
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.POST)
-    public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) {
+    public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws AccessDeniedException {
 
         printUserRoles();
 
-        Task task = this.taskService.createTask(taskDto);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Task task = this.taskService.createTask(projectId, taskDto, authentication);
         this.projectService.addTask(projectId, task);
 
         return "redirect:/project/" + projectId;
@@ -71,10 +76,13 @@ public class ProjectController {
 
 
     @RequestMapping(value = "/project/editTask", method = RequestMethod.POST)
-    public String editTask(@RequestParam Long taskId, @RequestParam Long projectId, @ModelAttribute TaskDto taskDto) {
+    public String editTask(@RequestParam Long taskId, @RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws AccessDeniedException {
 
         taskDto.setId(taskId);
-        this.taskService.updateTask(taskDto);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        this.taskService.updateTask(projectId, taskDto, authentication);
 
         return "redirect:/project/" + projectId;
     }

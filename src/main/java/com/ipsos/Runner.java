@@ -119,12 +119,6 @@ public class Runner implements ApplicationRunner {
         TaskDto taskDto4 = new TaskDto("Go to a call with RE");
         TaskDto taskDto5 = new TaskDto("Waiting for updated materials");
         TaskDto taskDto6 = new TaskDto("Check logs from validation");
-        this.taskService.createTask(taskDto);
-        this.taskService.createTask(taskDto2);
-        this.taskService.createTask(taskDto3);
-        this.taskService.createTask(taskDto4);
-        this.taskService.createTask(taskDto5);
-        this.taskService.createTask(taskDto6);
 //
 
 
