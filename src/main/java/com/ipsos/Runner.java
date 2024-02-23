@@ -77,16 +77,16 @@ public class Runner implements ApplicationRunner {
 
     }
     public void createEntities() {
-        UserDto userDto = new UserDto("Aleksandar", "Test_Password");
-        UserDto userDto2 = new UserDto("Kiril", "Test_Password", "Test_Password");
-        UserDto userDto3 = new UserDto("Adelina", "Test_Password", "Test_Password");
-        UserDto userDto4 = new UserDto("Lachezar", "Test_Password", "Test_Password");
-        UserDto userDto5 = new UserDto("Hristo", "Test_Password", "Test_Password");
-        UserDto userDto6 = new UserDto("Maria", "Test_Password", "Test_Password");
-        UserDto userDto7 = new UserDto("Galya", "Test_Password", "Test_Password");
-        UserDto userDto8 = new UserDto("Martin", "Test_Password", "Test_Password");
-        UserDto userDto9 = new UserDto("Martina", "Test_Password", "Test_Password");
-        UserDto userDto10 = new UserDto("Presyian", "Test_Password", "Test_Password");
+        UserDto userDto = new UserDto("Aleksandar", "123123");
+        UserDto userDto2 = new UserDto("Kiril", "123123", "123123");
+        UserDto userDto3 = new UserDto("Adelina", "123123", "123123");
+        UserDto userDto4 = new UserDto("Lachezar", "123123", "123123");
+        UserDto userDto5 = new UserDto("Hristo", "123123", "123123");
+        UserDto userDto6 = new UserDto("Maria", "123123", "123123");
+        UserDto userDto7 = new UserDto("Galya", "123123", "123123");
+        UserDto userDto8 = new UserDto("Martin", "123123", "123123");
+        UserDto userDto9 = new UserDto("Martina", "123123", "123123");
+        UserDto userDto10 = new UserDto("Presyian", "123123", "123123");
 
         this.userService.registerUser(userDto);
         this.userService.registerUser(userDto2);

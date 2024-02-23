@@ -36,6 +36,8 @@ public class UserDto {
 
     private List<Project> projects;
 
+    private boolean isEnabled;
+
     public UserDto() {
         this.projects = new ArrayList<>();
         this.roles = new HashSet<>();

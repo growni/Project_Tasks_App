@@ -4,6 +4,9 @@ import com.ipsos.entities.dtos.ProjectDto;
 import com.ipsos.services.ProjectService;
 import com.ipsos.services.TaskService;
 import com.ipsos.services.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -43,13 +46,27 @@ public class DashboardController {
         return "dashboard";
     }
 
-    @RequestMapping(value = "/dashboard", method = RequestMethod.POST)
+    @RequestMapping(value = "/dashboard/addProject", method = RequestMethod.POST)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_LEADER')")
     public ModelAndView addProject(@ModelAttribute ProjectDto projectDto) {
+
+        printUserRoles();
 
         this.projectService.createProject(projectDto);
 
         ModelAndView view = new ModelAndView("redirect:/dashboard");
         return view;
+    }
+
+    public void printUserRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
+        if (authentication != null && authentication.isAuthenticated()) {
+            System.out.println("Username: " + authentication.getName());
+            authentication.getAuthorities().forEach(authority -> {
+                System.out.println("User has role: " + authority.getAuthority());
+            });
+        }
     }
 
 

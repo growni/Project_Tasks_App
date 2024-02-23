@@ -69,7 +69,7 @@
   </div>
   <div id="addProjectForm" style="display:none;">
     <h3>Add Project</h3>
-    <form id="projectForm" th:action="@{/dashboard}" th:object="${projectDto}" method="post">
+    <form id="projectForm" th:action="@{/dashboard/addProject}" th:object="${projectDto}" method="post">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" required th:field="*{name}"><br>
 

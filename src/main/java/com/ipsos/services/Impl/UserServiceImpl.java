@@ -48,8 +48,11 @@ public class UserServiceImpl implements UserService {
         validateUserDto(userDto);
 
         String hashedPassword = this.passwordEncoder.encode(userDto.getPassword());
+
         userDto.setPassword(hashedPassword);
         userDto.setRoles(Set.of(roleRepository.findByName("ROLE_DEVELOPER")));
+        userDto.setEnabled(true);
+
         User newUser = this.modelMapper.map(userDto, User.class);
         return this.userRepository.save(newUser);
     }

@@ -47,7 +47,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .requestMatchers("/dashboard").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/dashboard/addProject").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/project/editProject").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/project/assignUser").hasAnyRole("ADMIN", "LEADER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

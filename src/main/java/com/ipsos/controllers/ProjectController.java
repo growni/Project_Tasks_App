@@ -8,6 +8,8 @@ import com.ipsos.services.ProjectService;
 import com.ipsos.services.TaskService;
 import com.ipsos.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +31,6 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_LEADER')")
     public String projectView(@PathVariable Long projectId, Model model) {
 
         ProjectDto projectDto = this.projectService.getByIdDto(projectId);
@@ -60,6 +61,8 @@ public class ProjectController {
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.POST)
     public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) {
 
+        printUserRoles();
+
         Task task = this.taskService.createTask(taskDto);
         this.projectService.addTask(projectId, task);
 
@@ -86,5 +89,17 @@ public class ProjectController {
 
         return "redirect:/project/" + projectId;
     }
+
+    public void printUserRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
+        if (authentication != null && authentication.isAuthenticated()) {
+            System.out.println("Username: " + authentication.getName());
+            authentication.getAuthorities().forEach(authority -> {
+                System.out.println("User has role: " + authority.getAuthority());
+            });
+        }
+    }
+
 
 }
