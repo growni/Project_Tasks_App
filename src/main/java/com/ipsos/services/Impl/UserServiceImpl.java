@@ -1,5 +1,6 @@
 package com.ipsos.services.Impl;
 
+import com.ipsos.entities.Project;
 import com.ipsos.entities.Role;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
@@ -10,6 +11,7 @@ import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.RoleRepository;
 import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.UserService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USERNAME_NOT_FOUND;
@@ -104,10 +107,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addRoleToUser(String username, Role role) {
         User user = this.userRepository.getByUsername(username)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityMissingFromDatabase(String.format(USERNAME_NOT_FOUND, username)));
 
         user.getRoles().add(role);
         this.userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        List<Project> userProjects = user.getProjects();
+
+        for (Project project : userProjects) {
+            project.setUser(null);
+        }
+
+
+        this.projectRepository.saveAll(userProjects);
+        this.userRepository.delete(user);
     }
 
     @Override

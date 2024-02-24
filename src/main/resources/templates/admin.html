@@ -11,7 +11,6 @@
     <thead>
     <tr>
         <th>Username</th>
-        <th>Password</th>
         <th>Role</th>
         <th>Actions</th>
     </tr>
@@ -19,11 +18,10 @@
     <tbody>
     <tr th:each="user : ${users}">
         <td th:text="${user.username}"></td>
-        <td th:text="${user.password}"></td>
         <td th:text="${user.roles[0].name}"></td>
         <td>
             <a th:href="@{'/admin/delete/' + ${user.id}}">Delete</a>
-            <a th:href="@{'/admin/adjust/' + ${user.id}}">Adjust</a>
+            <a th:href="@{'/admin/edit/' + ${user.id}}">Edit</a>
             <!-- Add links for other actions like change password, assign roles, assign teams, etc. -->
         </td>
     </tr>

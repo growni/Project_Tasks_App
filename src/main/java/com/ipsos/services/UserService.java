@@ -13,7 +13,7 @@ public interface UserService {
     User getById(Long id);
     User getByUsername(String username);
     void addRoleToUser(String username, Role role);
-
+    void deleteUser(Long userId);
     List<User> getAllUsers();
 
 }

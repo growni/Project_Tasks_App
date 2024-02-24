@@ -42,7 +42,6 @@ public class TaskServiceImpl implements TaskService {
     public Task createTask(Long projectId, TaskDto taskDto, Authentication authentication) throws AccessDeniedException {
 
         authenticateUserAction(projectId, authentication);
-
         validateTaskDto(taskDto);
 
         Task task = this.modelMapper.map(taskDto, Task.class);
@@ -106,7 +105,6 @@ public class TaskServiceImpl implements TaskService {
     public void updateTask(Long projectId, TaskDto taskDto, Authentication authentication) throws AccessDeniedException {
 
         authenticateUserAction(projectId, authentication);
-
         validateTaskDto(taskDto);
 
         Task currentTask = this.taskRepository.findById(taskDto.getId())

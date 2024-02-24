@@ -41,7 +41,7 @@ public class User extends BaseEntity implements UserDetails {
                     name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Project> projects;
 
     @ManyToOne(fetch = FetchType.LAZY)

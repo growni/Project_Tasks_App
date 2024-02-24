@@ -44,10 +44,6 @@ public class DashboardController {
 
         model.addAttribute("projectDto", new Project());
 
-//        if(userDetails == null) {
-//            return "redirect:/login";
-//        }
-
         return "dashboard";
     }
 
