@@ -198,7 +198,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(user == assignedUser) {
             throw new UserAlreadyAssignedException(String.format(USER_ALREADY_ASSIGNED, project.getName(), user.getUsername()));
         }
-
+        System.out.println("disabled cache test");
         project.setUser(user);
         user.getProjects().add(project);
 

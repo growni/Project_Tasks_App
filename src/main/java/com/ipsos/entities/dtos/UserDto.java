@@ -21,6 +21,8 @@ import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
 @AllArgsConstructor
 public class UserDto {
 
+    private Long id;
+
     @NotNull(message = USERNAME_REQUIRED)
     @Size(min = 2, max = 20, message = USERNAME_LENGTH_ERROR)
     private String username;

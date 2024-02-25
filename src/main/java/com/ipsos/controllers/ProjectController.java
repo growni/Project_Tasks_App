@@ -30,7 +30,7 @@ public class ProjectController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
+    @GetMapping(value = "/project/{projectId}")
     public String projectView(@PathVariable Long projectId, Model model) {
 
         ProjectDto projectDto = this.projectService.getByIdDto(projectId);
@@ -43,7 +43,7 @@ public class ProjectController {
 
 
 
-    @RequestMapping(value = "/project/assignUser", method = RequestMethod.POST)
+    @PostMapping(value = "/project/assignUser")
     public String assignUser(@RequestParam Long projectId, @RequestParam String username) {
 
         this.projectService.assignUser(username, projectId);
@@ -51,7 +51,7 @@ public class ProjectController {
         return "redirect:/project/" + projectId;
     }
 
-    @RequestMapping(value = "/project/deleteTask", method = RequestMethod.POST)
+    @PostMapping(value = "/project/deleteTask")
     public String deleteTask(@RequestParam Long taskId, @RequestParam Long projectId) throws AccessDeniedException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,7 +61,7 @@ public class ProjectController {
         return "redirect:/project/" + projectId;
     }
 
-    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.POST)
+    @PostMapping(value = "/project/{projectId}")
     public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws AccessDeniedException {
 
         printUserRoles();
@@ -75,7 +75,7 @@ public class ProjectController {
     }
 
 
-    @RequestMapping(value = "/project/editTask", method = RequestMethod.POST)
+    @PostMapping(value = "/project/editTask")
     public String editTask(@RequestParam Long taskId, @RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws AccessDeniedException {
 
         taskDto.setId(taskId);
@@ -87,7 +87,7 @@ public class ProjectController {
         return "redirect:/project/" + projectId;
     }
 
-    @RequestMapping(value = "/project/editProject", method = RequestMethod.POST)
+    @PostMapping(value = "/project/editProject")
     public String editProject(@RequestParam Long projectId, @ModelAttribute ProjectDto projectDto) {
 
         projectDto.setId(projectId);

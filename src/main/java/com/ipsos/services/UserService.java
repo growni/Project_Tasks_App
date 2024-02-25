@@ -14,6 +14,7 @@ public interface UserService {
     User getByUsername(String username);
     void addRoleToUser(String username, Role role);
     void deleteUser(Long userId);
+    void editUser(UserDto userDto);
     List<User> getAllUsers();
 
 }

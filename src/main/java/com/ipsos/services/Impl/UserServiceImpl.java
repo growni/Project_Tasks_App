@@ -22,8 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
-import static com.ipsos.constants.ErrorMessages.UserOperations.USERNAME_NOT_FOUND;
-import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
+import static com.ipsos.constants.ErrorMessages.UserOperations.*;
 import static com.ipsos.constants.Regex.PASSWORD_REGEX;
 import static com.ipsos.constants.Regex.USERNAME_REGEX;
 
@@ -50,11 +49,17 @@ public class UserServiceImpl implements UserService {
 
         validateUserDto(userDto);
 
+        boolean isPresent = this.userRepository.getByUsername(userDto.getUsername()).isPresent();
+
+        if(isPresent) {
+            throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, userDto.getUsername()));
+        }
+
         String hashedPassword = this.passwordEncoder.encode(userDto.getPassword());
 
         userDto.setPassword(hashedPassword);
         userDto.setRoles(Set.of(roleRepository.findByName("ROLE_DEVELOPER")));
-        userDto.setEnabled(true);
+        userDto.setEnabled(false);
 
         User newUser = this.modelMapper.map(userDto, User.class);
         return this.userRepository.save(newUser);
@@ -70,10 +75,19 @@ public class UserServiceImpl implements UserService {
             throw new InvalidDataException(INVALID_PASSWORD);
         }
 
-        boolean isPresent = this.userRepository.getByUsername(userDto.getUsername()).isPresent();
+        if(userDto.getRoles().size() > 0) {
+            validateRoles(userDto.getRoles());
+        }
 
-        if(isPresent) {
-            throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, userDto.getUsername()));
+    }
+
+    private void validateRoles(Set<Role> roles) {
+        Set<String> ACCEPTED_ROLES = Set.of("ROLE_DEVELOPER", "ROLE_ADMIN", "ROLE_LEADER");
+
+        boolean containsOnlyValidRoles = roles.stream().allMatch(ACCEPTED_ROLES::contains);
+
+        if(!containsOnlyValidRoles) {
+            throw new InvalidDataException(INVALID_USER_ROLE);
         }
     }
 
@@ -125,9 +139,20 @@ public class UserServiceImpl implements UserService {
             project.setUser(null);
         }
 
-
         this.projectRepository.saveAll(userProjects);
         this.userRepository.delete(user);
+    }
+
+    @Override
+    @Transactional
+    public void editUser(UserDto userDto) {
+        validateUserDto(userDto);
+
+        User currentUser = this.userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        this.modelMapper.map(userDto, currentUser);
+        this.userRepository.save(currentUser);
     }
 
     @Override

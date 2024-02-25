@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Details</title>
+</head>
+<body>
+<h1>User Details</h1>
+
+<div>
+  <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+  <p><strong>Password:</strong> <span th:text="${user.password}"></span></p>
+  <p><strong>Role:</strong> <span th:text="${user.roles[0].name}"></span></p>
+  <p><strong>Account Enabled:</strong> <span th:text="${user.enabled ? 'Yes' : 'No'}"></span></p>
+</div>
+
+<!--<form th:action="/admin/edit/{userId}" method="get">-->
+<!--  <input type="hidden" name="userId" th:value="${user.id}">-->
+<!--  <button type="submit">Edit</button>-->
+<!--</form>-->
+
+<form th:action="@{/admin/user_details/{userId}/delete(userId=${user.id})}" method="post">
+  <input type="hidden" name="userId" th:value="${user.id}">
+  <button type="submit">Delete</button>
+</form>
+
+
+<!--<form th:action="/admin/disable/{userId}" method="post">-->
+<!--  <input type="hidden" name="userId" th:value="${user.id}">-->
+<!--  <button type="submit">Disable</button>-->
+<!--</form>-->
+
+</body>
+</html>

@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Users</title>
+    <style>
+        /* Style for clickable rows */
+        tbody tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+    function redirectToUserDetails(userId) {
+        window.location.href = '/admin/user_details/' + userId;
+    }
+</script>
 </head>
 <body>
 <h1>Admin - Users</h1>
@@ -12,18 +25,12 @@
     <tr>
         <th>Username</th>
         <th>Role</th>
-        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="user : ${users}">
+    <tr th:each="user : ${users}" th:onclick="'redirectToUserDetails(\'' + ${user.id} + '\')'">
         <td th:text="${user.username}"></td>
         <td th:text="${user.roles[0].name}"></td>
-        <td>
-            <a th:href="@{'/admin/delete/' + ${user.id}}">Delete</a>
-            <a th:href="@{'/admin/edit/' + ${user.id}}">Edit</a>
-            <!-- Add links for other actions like change password, assign roles, assign teams, etc. -->
-        </td>
     </tr>
     </tbody>
 </table>
