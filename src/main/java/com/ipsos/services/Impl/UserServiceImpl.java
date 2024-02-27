@@ -76,17 +76,17 @@ public class UserServiceImpl implements UserService {
         }
 
         if(userDto.getRoles().size() > 0) {
-            validateRoles(userDto.getRoles());
+            for (Role role : userDto.getRoles()) {
+                validateRole(role);
+            }
         }
 
     }
 
-    private void validateRoles(Set<Role> roles) {
+    private void validateRole(Role role) {
         Set<String> ACCEPTED_ROLES = Set.of("ROLE_DEVELOPER", "ROLE_ADMIN", "ROLE_LEADER");
 
-        boolean containsOnlyValidRoles = roles.stream().allMatch(ACCEPTED_ROLES::contains);
-
-        if(!containsOnlyValidRoles) {
+        if (!ACCEPTED_ROLES.contains(role.getName())) {
             throw new InvalidDataException(INVALID_USER_ROLE);
         }
     }
@@ -144,15 +144,100 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void editUser(UserDto userDto) {
-        validateUserDto(userDto);
-
-        User currentUser = this.userRepository.findById(userDto.getId())
+    public void updateUsername(Long userId, String username) {
+        User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
 
-        this.modelMapper.map(userDto, currentUser);
-        this.userRepository.save(currentUser);
+        Optional<User> byUsername = this.userRepository.getByUsername(username);
+
+        if(byUsername.isPresent()) {
+            throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, username));
+        }
+
+        if(!isValidUsername(username)) {
+            throw new InvalidDataException(INVALID_USERNAME);
+        }
+
+        user.setUsername(username);
+
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(Long userId, String password) {
+
+        if(!isValidPassword(password)) {
+            throw new InvalidDataException(INVALID_PASSWORD);
+        }
+
+        String hashedPassword = this.passwordEncoder.encode(password);
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        user.setPassword(hashedPassword);
+
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void addRole(Long userId, String roleType) {
+        Role role = new Role(roleType);
+
+        validateRole(role);
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        Role roleFromDB = this.roleRepository.findByName(role.getName());
+
+        if(roleFromDB != null) {
+            user.getRoles().add(roleFromDB);
+        } else {
+            this.roleRepository.save(role);
+            user.getRoles().add(role);
+        }
+
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void removeRole(Long userId, String roleType) {
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        Role role = user.getRoles()
+                .stream()
+                .filter(r -> r.getName().equals(roleType))
+                .findFirst()
+                .orElseThrow(() ->
+                        new EntityMissingFromDatabase(String.format(ROLE_NOT_ASSIGNED_TO, roleType, user.getUsername()))
+                );
+
+
+        user.getRoles().remove(role);
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void disableAccount(Long userId) {
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        user.setEnabled(false);
+
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void activateAccount(Long userId) {
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+
+        user.setEnabled(true);
+
+        this.userRepository.save(user);
     }
 
     @Override

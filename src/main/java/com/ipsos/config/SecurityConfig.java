@@ -39,12 +39,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.csrf().disable()
+                .authorizeRequests()
                 .requestMatchers("/dashboard/addProject").hasAnyRole("ADMIN", "LEADER")
                 .requestMatchers("/project/editProject").hasAnyRole("ADMIN", "LEADER")
                 .requestMatchers("/project/assignUser").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/project/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
+                .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()

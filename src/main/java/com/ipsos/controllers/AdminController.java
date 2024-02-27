@@ -2,6 +2,7 @@ package com.ipsos.controllers;
 
 
 import com.ipsos.entities.User;
+import com.ipsos.entities.dtos.UserDto;
 import com.ipsos.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +55,54 @@ public class AdminController {
         this.userService.deleteUser(userId);
 
         return "redirect:/admin";
+    }
+
+    @PostMapping("/user_details/{userId}/edit/username")
+    public String updateUsername(@RequestParam Long userId, @RequestParam String username) {
+
+        userService.updateUsername(userId, username);
+
+        return "redirect:/admin/user_details/" + userId;
+    }
+
+    @PostMapping("/user_details/{userId}/edit/password")
+    public String updatePassword(@RequestParam Long userId, @RequestParam String password) {
+
+        userService.updatePassword(userId, password);
+
+        return "redirect:/admin/user_details/" + userId;
+    }
+
+    @PostMapping("/user_details/{userId}/add/role")
+    public String addRole(@RequestParam Long userId, @RequestParam String roleTypeAdd) {
+
+        userService.addRole(userId, roleTypeAdd);
+
+        return "redirect:/admin/user_details/" + userId;
+    }
+
+    @PostMapping("/user_details/{userId}/remove/role")
+    public String removeRole(@RequestParam Long userId, @RequestParam String roleTypeRemove) {
+
+        userService.removeRole(userId, roleTypeRemove);
+
+        return "redirect:/admin/user_details/" + userId;
+    }
+
+    @PostMapping("/user_details/{userId}/disable")
+    public String disableAccount(@RequestParam Long userId) {
+
+        userService.disableAccount(userId);
+
+        return "redirect:/admin/user_details/" + userId;
+    }
+
+    @PostMapping("/user_details/{userId}/activate")
+    public String activateAccount(@RequestParam Long userId) {
+
+        userService.activateAccount(userId);
+
+        return "redirect:/admin/user_details/" + userId;
     }
 
 }

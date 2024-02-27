@@ -34,6 +34,8 @@ public class UserController {
 
         ModelAndView view = new ModelAndView("redirect:/register");
 
+        System.out.println(userDto);
+
         if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
             redirectAttributes.addFlashAttribute("errorMessage", CONFIRM_PASSWORD_INCORRECT);
 
