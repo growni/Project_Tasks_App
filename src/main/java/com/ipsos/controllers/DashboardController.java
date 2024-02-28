@@ -39,7 +39,7 @@ public class DashboardController {
         String username = authentication.getName();
 
         List<Project> projects = this.projectService.findProjectByUsername(username);
-
+        model.addAttribute("username", username);
         model.addAttribute("projects", projects);
 
         model.addAttribute("projectDto", new Project());

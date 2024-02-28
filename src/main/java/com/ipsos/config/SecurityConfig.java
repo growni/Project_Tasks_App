@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/project/assignUser").hasAnyRole("ADMIN", "LEADER")
                 .requestMatchers("/project/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
+                .requestMatchers("/profile/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
@@ -53,11 +54,12 @@ public class SecurityConfig {
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/dashboard")
                 .and()
-                .logout((logout) -> logout.logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                )
-                .httpBasic();
+                .logout()
+                .logoutUrl("/logout") // URL to trigger logout
+                .logoutSuccessUrl("/login") // Redirect to this URL after logout
+                .invalidateHttpSession(true) // Invalidate session
+                .deleteCookies("JSESSIONID") // Delete cookies
+                .permitAll();
         return http.build();
     }
 

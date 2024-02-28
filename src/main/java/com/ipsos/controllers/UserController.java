@@ -1,19 +1,23 @@
 package com.ipsos.controllers;
 
+import com.ipsos.entities.Role;
+import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
+import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ipsos.constants.ErrorMessages.AuthOperations.CONFIRM_PASSWORD_INCORRECT;
 
@@ -60,6 +64,75 @@ public class UserController {
     public String logoutSuccess() {
         printUserRoles();
         return "logout-success";
+    }
+
+    @GetMapping("/profile")
+    public ModelAndView userProfileView(Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        model.addAttribute("username", username);
+
+        User user = this.userService.getByUsername(username);
+
+        List<String> userRoleTypes = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+
+        model.addAttribute("roles", userRoleTypes);
+
+        ModelAndView view = new ModelAndView();
+        view.setViewName("profile");
+
+        return view;
+    }
+
+    @GetMapping("/profile/change-password")
+    public ModelAndView changePasswordView() {
+        ModelAndView view = new ModelAndView();
+
+        view.setViewName("change-password");
+
+        return view;
+    }
+
+    @PostMapping("/profile/change-password")
+    public ModelAndView changePassword(@RequestParam String password, @RequestParam String confirmPassword) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        if(!password.equals(confirmPassword)) {
+            throw new InvalidDataException(CONFIRM_PASSWORD_INCORRECT);
+        }
+
+        Long userId = this.userService.getByUsername(username).getId();
+
+        this.userService.updatePassword(userId, password);
+
+        ModelAndView view = new ModelAndView();
+        view.setViewName("redirect:/profile");
+
+        return view;
+    }
+
+    @PostMapping("/profile/changeUsername")
+    public ModelAndView changePassword(@RequestParam String newUsername) {
+
+        Authentication oldAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        String oldUsername = oldAuthentication.getName();
+
+        Long userId = this.userService.getByUsername(oldUsername).getId();
+
+        this.userService.updateUsername(userId, newUsername);
+
+        User updatedUser = userService.getByUsername(newUsername);
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, oldAuthentication.getCredentials(), oldAuthentication.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+        ModelAndView view = new ModelAndView();
+        view.setViewName("redirect:/profile");
+        return view;
     }
 
     public void printUserRoles() {

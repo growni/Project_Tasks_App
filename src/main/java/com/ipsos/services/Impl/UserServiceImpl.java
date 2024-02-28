@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUsername(username);
 
-        this.userRepository.save(user);
+        this.userRepository.saveAndFlush(user);
     }
 
     @Override
@@ -170,11 +170,14 @@ public class UserServiceImpl implements UserService {
             throw new InvalidDataException(INVALID_PASSWORD);
         }
 
-        String hashedPassword = this.passwordEncoder.encode(password);
-
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
 
+        if(passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidDataException(NEW_PASSWORD_IS_OLD_PASSWORD);
+        }
+
+        String hashedPassword = this.passwordEncoder.encode(password);
         user.setPassword(hashedPassword);
 
         this.userRepository.save(user);
