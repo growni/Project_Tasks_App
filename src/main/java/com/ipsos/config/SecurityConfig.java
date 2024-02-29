@@ -48,6 +48,14 @@ public class SecurityConfig {
                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .requestMatchers("/profile/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/teams").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
+                .requestMatchers("/teams/add").hasRole("ADMIN")
+                .requestMatchers("/team/join").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
+                .requestMatchers("/team/approveRequest").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/team/rejectRequest").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/team/removeMember").hasAnyRole("ADMIN", "LEADER")
+                .requestMatchers("/team/assignLeader").hasRole("ADMIN")
+                .requestMatchers("/team/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
@@ -55,10 +63,10 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/dashboard")
                 .and()
                 .logout()
-                .logoutUrl("/logout") // URL to trigger logout
-                .logoutSuccessUrl("/login") // Redirect to this URL after logout
-                .invalidateHttpSession(true) // Invalidate session
-                .deleteCookies("JSESSIONID") // Delete cookies
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll();
         return http.build();
     }

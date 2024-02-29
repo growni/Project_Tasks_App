@@ -1,8 +1,9 @@
 package com.ipsos.controllers;
 
 
+import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
-import com.ipsos.entities.dtos.UserDto;
+import com.ipsos.services.TeamService;
 import com.ipsos.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +17,11 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
+    private final TeamService teamService;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, TeamService teamService) {
         this.userService = userService;
+        this.teamService = teamService;
     }
 
     @GetMapping("")
@@ -104,5 +107,7 @@ public class AdminController {
 
         return "redirect:/admin/user_details/" + userId;
     }
+
+
 
 }

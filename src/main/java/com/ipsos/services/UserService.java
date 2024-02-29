@@ -17,9 +17,12 @@ public interface UserService {
     void updateUsername(Long userId, String username);
     void updatePassword(Long userId, String password);
     void addRole(Long userId, String roleType);
+
+    boolean hasRole(Long userId, String roleType);
     void removeRole(Long userId, String roleType);
     void disableAccount(Long userId);
     void activateAccount(Long userId);
     List<User> getAllUsers();
+    void joinTeam(Long userId, Long teamId) throws IllegalAccessException;
 
 }

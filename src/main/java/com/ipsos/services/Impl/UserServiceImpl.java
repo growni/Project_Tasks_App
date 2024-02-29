@@ -2,6 +2,7 @@ package com.ipsos.services.Impl;
 
 import com.ipsos.entities.Project;
 import com.ipsos.entities.Role;
+import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
@@ -9,6 +10,7 @@ import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.exceptions.UsernameAlreadyExistsException;
 import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.RoleRepository;
+import com.ipsos.repositories.TeamRepository;
 import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.UserService;
 import jakarta.transaction.Transactional;
@@ -19,9 +21,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.ipsos.constants.ErrorMessages.AuthOperations.*;
+import static com.ipsos.constants.ErrorMessages.TeamOperations.JOIN_REQUEST_ALREADY_SENT;
+import static com.ipsos.constants.ErrorMessages.TeamOperations.TEAM_NOT_FOUND;
 import static com.ipsos.constants.ErrorMessages.UserOperations.*;
 import static com.ipsos.constants.Regex.PASSWORD_REGEX;
 import static com.ipsos.constants.Regex.USERNAME_REGEX;
@@ -32,14 +35,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final RoleRepository roleRepository;
+    private final TeamRepository teamRepository;
 
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ProjectRepository projectRepository, RoleRepository roleRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, ProjectRepository projectRepository, RoleRepository roleRepository, TeamRepository teamRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.roleRepository = roleRepository;
+        this.teamRepository = teamRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
     }
@@ -248,7 +253,34 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findAll();
     }
 
+    @Override
+    public void joinTeam(Long userId, Long teamId) throws IllegalAccessException {
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
 
+        boolean userHasTeam = user.getTeam() != null;
+
+        if(userHasTeam) {
+            throw new IllegalAccessException(String.format(USER_ALREADY_HAS_TEAM, user.getUsername(), user.getTeam().getName()));
+        }
+
+        Team team = this.teamRepository.findById(teamId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(TEAM_NOT_FOUND));
+
+        if(team.getJoinRequestUsernames().contains(user.getUsername())) {
+            throw new UsernameAlreadyExistsException(String.format(JOIN_REQUEST_ALREADY_SENT, team.getName()));
+        }
+
+        team.getJoinRequestUsernames().add(user.getUsername());
+        this.teamRepository.save(team);
+    }
+
+    @Override
+    public boolean hasRole(Long userId, String roleType) {
+        User user = getById(userId);
+
+        return user.getRoles().stream().anyMatch(r -> r.getName().equals(roleType));
+    }
 }
 
 
