@@ -1,8 +1,8 @@
 package com.ipsos.services.Impl;
 
 import com.ipsos.entities.Project;
-import com.ipsos.entities.Role;
 import com.ipsos.entities.Task;
+import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.ProjectDto;
 import com.ipsos.entities.enums.Priority;
@@ -14,17 +14,14 @@ import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.TaskRepository;
 import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.ProjectService;
+import com.ipsos.services.TeamService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
 import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
@@ -36,12 +33,14 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final TeamService teamService;
     private final ModelMapper modelMapper;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, TeamService teamService, ModelMapper modelMapper) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.teamService = teamService;
         this.modelMapper = modelMapper;
 
     }
@@ -233,4 +232,17 @@ public class ProjectServiceImpl implements ProjectService {
         return this.projectRepository.findByUsername(username);
     }
 
+    @Override
+    public List<Project> getTeamProjects(Long teamId) {
+        Team team = this.teamService.getById(teamId);
+        List<User> members = team.getMembers();
+
+        List<Project> teamProjects = new ArrayList<>();
+
+        for (User member : members) {
+            teamProjects.addAll(member.getProjects());
+        }
+
+        return teamProjects;
+    }
 }

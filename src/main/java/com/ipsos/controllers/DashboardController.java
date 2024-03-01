@@ -1,12 +1,14 @@
 package com.ipsos.controllers;
 
 import com.ipsos.entities.Project;
+import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.ProjectDto;
 import com.ipsos.services.ProjectService;
 import com.ipsos.services.TaskService;
 import com.ipsos.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/")
@@ -38,7 +42,15 @@ public class DashboardController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        List<Project> projects = this.projectService.findProjectByUsername(username);
+        boolean isUserLeader = authentication.getAuthorities()
+                .stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_LEADER"));
+
+        User user = this.userService.getByUsername(username);
+
+        List<Project> projects = isUserLeader ? this.projectService.getTeamProjects(user.getTeam().getId())
+                                                 : this.projectService.findProjectByUsername(username);
+
         model.addAttribute("username", username);
         model.addAttribute("projects", projects);
 
@@ -50,8 +62,6 @@ public class DashboardController {
     @RequestMapping(value = "/dashboard/addProject", method = RequestMethod.POST)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_LEADER')")
     public ModelAndView addProject(@ModelAttribute ProjectDto projectDto) {
-
-        printUserRoles();
 
         this.projectService.createProject(projectDto);
 

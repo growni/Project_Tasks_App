@@ -25,6 +25,7 @@ public interface ProjectService {
    void assignUser(String username, Long projectId);
    void removeUser(String username, Long projectId);
    List<Project> findProjectByUsername(String username);
+   List<Project> getTeamProjects(Long teamId);
 
 
 }
