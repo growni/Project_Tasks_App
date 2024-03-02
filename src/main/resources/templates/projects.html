@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+</head>
+<body>
+<h1>Projects</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Job Number</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Assigned User</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Iterate over each project -->
+    <tr th:each="project : ${projects}" th:attr="onclick='location.href=\'/project/' + ${project.id} + '\''" style="cursor:pointer;">
+        <!-- Link to project details page -->
+        <td><span th:text="${project.name}"></span></a></td>
+        <!-- Display job number -->
+        <td><span th:text="${project.jobNumber != null ? project.jobNumber : 'N/A'}"></span></td>
+        <!-- Display status -->
+        <td><span th:text="${project.status}"></span></td>
+        <!-- Display priority -->
+        <td><span th:text="${project.priority}"></span></td>
+        <!-- Display assigned user or "not assigned" -->
+        <td><span th:text="${project.user != null ? project.user.username : 'Not Assigned'}"></span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

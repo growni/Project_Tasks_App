@@ -94,7 +94,7 @@
 
         <label for="status-${task.id}">Status:</label>
         <select id="status-${task.id}" name="status">
-          <option value="NOT_STARTED" th:selected="${task.status == 'NOT_STARTED'}">Pending</option>
+          <option value="NOT_STARTED" th:selected="${task.status == 'NOT_STARTED'}">Not started</option>
           <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">In Progress</option>
           <option value="COMPLETED" th:selected="${task.status == 'COMPLETED'}">Completed</option>
         </select><br>

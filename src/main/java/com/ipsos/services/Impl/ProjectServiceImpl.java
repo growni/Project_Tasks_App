@@ -245,4 +245,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         return teamProjects;
     }
+
+    @Override
+    public List<Project> getAllProjects() {
+        return this.projectRepository.findAll();
+    }
 }

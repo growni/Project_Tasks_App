@@ -1,5 +1,6 @@
 package com.ipsos.controllers;
 
+import com.ipsos.entities.Project;
 import com.ipsos.entities.Task;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.ProjectDto;
@@ -96,6 +97,16 @@ public class ProjectController {
         this.projectService.updateProject(projectDto);
 
         return "redirect:/project/" + projectId;
+    }
+
+    @GetMapping(value = "/projects")
+    public String projectsView(Model model) {
+
+        List<Project> projects = this.projectService.getAllProjects();
+
+        model.addAttribute("projects", projects);
+
+        return "projects";
     }
 
     public void printUserRoles() {

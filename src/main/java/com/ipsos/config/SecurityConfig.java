@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .requestMatchers("/team/removeMember").hasAnyRole("ADMIN", "LEADER")
                 .requestMatchers("/team/assignLeader").hasRole("ADMIN")
                 .requestMatchers("/team/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
+                .requestMatchers("/projects").hasAnyRole("ADMIN", "LEADER")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

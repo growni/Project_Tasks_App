@@ -18,6 +18,7 @@
     </span>
     </p>
   <p><strong>Account Enabled:</strong> <span th:text="${user.enabled}"></span></p>
+  <p><strong>Team:</strong> <span th:text="${user.team != null ? user.team.name : 'Not in a team'}"></span></p>
 </div>
 
 <form th:action="@{/admin/user_details/{userId}/edit/username(userId=${user.id})}" method="post">
