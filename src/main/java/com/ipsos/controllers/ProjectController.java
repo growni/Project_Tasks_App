@@ -34,8 +34,16 @@ public class ProjectController {
     @GetMapping(value = "/project/{projectId}")
     public String projectView(@PathVariable Long projectId, Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUsername = authentication.getName();
+
+        User loggedUser = this.userService.getByUsername(loggedUsername);
+
+        boolean isUserLeader = this.userService.hasRole(loggedUser.getId(), "ROLE_LEADER");
+
         ProjectDto projectDto = this.projectService.getByIdDto(projectId);
-        List<User> users = this.userService.getAllUsers();
+        List<User> users = isUserLeader ? loggedUser.getTeam().getMembers()
+                                        : this.userService.getAllUsers();
 
         model.addAttribute("users", users);
         model.addAttribute("project", projectDto);
@@ -45,7 +53,7 @@ public class ProjectController {
 
 
     @PostMapping(value = "/project/assignUser")
-    public String assignUser(@RequestParam Long projectId, @RequestParam String username) {
+    public String assignUser(@RequestParam Long projectId, @RequestParam String username) throws IllegalAccessException {
 
         this.projectService.assignUser(username, projectId);
 
@@ -97,6 +105,13 @@ public class ProjectController {
         this.projectService.updateProject(projectDto);
 
         return "redirect:/project/" + projectId;
+    }
+
+    @PostMapping(value = "/project/delete")
+    public String deleteProject(@RequestParam Long projectId) throws IllegalAccessException {
+        this.projectService.deleteProject(projectId);
+
+        return "redirect:/projects";
     }
 
     @GetMapping(value = "/projects")

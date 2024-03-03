@@ -87,7 +87,7 @@ public class TeamController {
 
     @PostMapping("/team/approveRequest")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    public String approveJoinRequest(@RequestParam Long teamId, @RequestParam String username) {
+    public String approveJoinRequest(@RequestParam Long teamId, @RequestParam String username) throws IllegalAccessException {
 
         this.teamService.approveJoinRequest(teamId, username);
 
@@ -96,7 +96,7 @@ public class TeamController {
 
     @PostMapping("/team/rejectRequest")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    public String rejectJoinRequest(@RequestParam Long teamId, @RequestParam String username) {
+    public String rejectJoinRequest(@RequestParam Long teamId, @RequestParam String username) throws IllegalAccessException {
 
         this.teamService.rejectJoinRequest(teamId, username);
 
@@ -105,7 +105,7 @@ public class TeamController {
 
     @PostMapping("/team/removeMember")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    public String removeMember(@RequestParam Long teamId, @RequestParam Long memberId) {
+    public String removeMember(@RequestParam Long teamId, @RequestParam Long memberId) throws IllegalAccessException {
 
         this.teamService.removeMember(teamId, memberId);
 

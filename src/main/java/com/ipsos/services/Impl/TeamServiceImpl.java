@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.ipsos.constants.ErrorMessages.AuthOperations.ACTION_NOT_ALLOWED;
 import static com.ipsos.constants.ErrorMessages.TeamOperations.*;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USERNAME_NOT_FOUND;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USER_ALREADY_HAS_TEAM;
@@ -92,12 +93,14 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void approveJoinRequest(Long teamId, String username) {
+    public void approveJoinRequest(Long teamId, String username) throws IllegalAccessException {
         User user = this.userService.getByUsername(username);
 
         if(user.getTeam() != null) {
             throw new UserAlreadyAssignedException(String.format(USER_ALREADY_HAS_TEAM, username, user.getTeam().getName()));
         }
+
+        validateUserAction(teamId);
 
         Team team = getById(teamId);
 
@@ -110,10 +113,26 @@ public class TeamServiceImpl implements TeamService {
         removeJoinRequestsFromAllTeams(username);
     }
 
+    private void validateUserAction(Long teamId) throws IllegalAccessException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUsername = authentication.getName();
+
+        User loggedUser = this.userService.getByUsername(loggedUsername);
+        Team team = getById(teamId);
+
+        if(!this.userService.hasRole(loggedUser.getId(), "ROLE_ADMIN") &&
+                (loggedUser.getTeam() == null || !loggedUser.getTeam().getId().equals(teamId))) {
+            throw new IllegalAccessException(String.format(USER_NOT_LEADER_OF_THIS_TEAM, loggedUsername, team.getName()));
+        }
+
+    }
+
     @Override
-    public void rejectJoinRequest(Long teamId, String username) {
+    public void rejectJoinRequest(Long teamId, String username) throws IllegalAccessException {
         User user = this.userService.getByUsername(username);
         Team team = getById(teamId);
+
+        validateUserAction(teamId);
 
         team.getJoinRequestUsernames().remove(user.getUsername());
 
@@ -131,7 +150,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void removeMember(Long teamId, Long memberId) {
+    public void removeMember(Long teamId, Long memberId) throws IllegalAccessException {
         Team team = getById(teamId);
         User user = this.userService.getById(memberId);
 
@@ -139,18 +158,25 @@ public class TeamServiceImpl implements TeamService {
             throw new EntityMissingFromDatabase(String.format(USER_NOT_IN_TEAM, user.getUsername(), team.getName()));
         }
 
-        if (team.getTeamLeader() != null && team.getTeamLeader().getId().equals(memberId)) {
+//        if (team.getTeamLeader() != null && team.getTeamLeader().getId().equals(memberId)) {
+//            this.userService.removeRole(memberId, "ROLE_LEADER");
+//            team.setTeamLeader(null);
+//
+//
+//            Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
+//            if (currentAuthentication != null && currentAuthentication.getName().equals(user.getUsername())) {
+//                Collection<? extends GrantedAuthority> updatedAuthorities = new ArrayList<>(currentAuthentication.getAuthorities());
+//                updatedAuthorities.remove(new SimpleGrantedAuthority("ROLE_LEADER"));
+//                Authentication newAuthentication = new UsernamePasswordAuthenticationToken(currentAuthentication.getPrincipal(), currentAuthentication.getCredentials(), updatedAuthorities);
+//                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+//            }
+//        }
+
+        validateUserAction(teamId);
+
+        if(this.userService.hasRole(memberId, "ROLE_LEADER")) {
             this.userService.removeRole(memberId, "ROLE_LEADER");
             team.setTeamLeader(null);
-
-
-            Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
-            if (currentAuthentication != null && currentAuthentication.getName().equals(user.getUsername())) {
-                Collection<? extends GrantedAuthority> updatedAuthorities = new ArrayList<>(currentAuthentication.getAuthorities());
-                updatedAuthorities.remove(new SimpleGrantedAuthority("ROLE_LEADER"));
-                Authentication newAuthentication = new UsernamePasswordAuthenticationToken(currentAuthentication.getPrincipal(), currentAuthentication.getCredentials(), updatedAuthorities);
-                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-            }
         }
 
         team.getMembers().remove(user);

@@ -16,6 +16,9 @@
     function redirectToUserDetails(userId) {
         window.location.href = '/admin/user_details/' + userId;
     }
+    function redirectToTeam(teamId) {
+        window.location.href = '/team/' + teamId;
+    }
 </script>
 </head>
 <body>
@@ -29,14 +32,17 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="user : ${users}" th:onclick="'redirectToUserDetails(\'' + ${user.id} + '\')'">
-        <td th:text="${user.username}"></td>
-        <td th:text="${user.team != null ? user.team.name : 'Not in a team'}"></td>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.username}" th:onclick="'redirectToUserDetails(\'' + ${user.id} + '\')'"></td>
         <td>
-            <span th:each="role, roleIndex : ${user.roles}">
-                <span th:text="${role.name}"></span>
-                <span th:if="${!roleIndex.last}">, </span>
-            </span>
+            <span th:if="${user.team != null}" th:text="${user.team.name}" th:onclick="'redirectToTeam(\'' + ${user.team.id} + '\')'"></span>
+            <span th:unless="${user.team != null}">Not in a team</span>
+        </td>
+        <td>
+        <span th:each="role, roleIndex : ${user.roles}">
+            <span th:text="${role.name}"></span>
+            <span th:if="${!roleIndex.last}">, </span>
+        </span>
         </td>
     </tr>
     </tbody>

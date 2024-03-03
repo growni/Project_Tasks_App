@@ -53,6 +53,10 @@
 
 <!-- "Edit" button to toggle the form visibility -->
 <button id="editButton" onclick="toggleEdit()">Edit</button>
+<form th:action="@{/project/delete}" method="post">
+  <input type="hidden" name="projectId" th:value="${project.id}" />
+  <button type="submit">Delete Project</button>
+</form>
 
 <p th:if="${project.user != null}">Assigned User: <span th:text="${project.user?.username}"></span></p>
 <p th:unless="${project.user != null}">No user assigned to this project</p>

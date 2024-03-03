@@ -10,7 +10,7 @@ public interface TeamService {
     Team getById(Long teamId);
 
     void assignLeader(Long teamId, String leaderUsername);
-    void approveJoinRequest(Long teamId, String username);
-    void rejectJoinRequest(Long teamId, String username);
-    void removeMember(Long teamId, Long memberId);
+    void approveJoinRequest(Long teamId, String username) throws IllegalAccessException;
+    void rejectJoinRequest(Long teamId, String username) throws IllegalAccessException;
+    void removeMember(Long teamId, Long memberId) throws IllegalAccessException;
 }

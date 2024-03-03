@@ -15,8 +15,11 @@ import com.ipsos.repositories.TaskRepository;
 import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.ProjectService;
 import com.ipsos.services.TeamService;
+import com.ipsos.services.UserService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +28,7 @@ import java.util.List;
 
 import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
 import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
+import static com.ipsos.constants.ErrorMessages.TeamOperations.USER_NOT_LEADER_OF_THIS_TEAM;
 import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
 import static com.ipsos.constants.Regex.NAME_REGEX;
 
@@ -34,13 +38,15 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TeamService teamService;
+    private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, TeamService teamService, ModelMapper modelMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, TeamService teamService, UserService userService, ModelMapper modelMapper) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.teamService = teamService;
+        this.userService = userService;
         this.modelMapper = modelMapper;
 
     }
@@ -185,7 +191,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public void assignUser(String username, Long projectId) {
+    public void assignUser(String username, Long projectId) throws IllegalAccessException {
         User user = this.userRepository.getByUsername(username)
                 .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
 
@@ -197,7 +203,9 @@ public class ProjectServiceImpl implements ProjectService {
         if(user == assignedUser) {
             throw new UserAlreadyAssignedException(String.format(USER_ALREADY_ASSIGNED, project.getName(), user.getUsername()));
         }
-        System.out.println("disabled cache test");
+
+        validateUserAction(projectId);
+
         project.setUser(user);
         user.getProjects().add(project);
 
@@ -244,6 +252,52 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         return teamProjects;
+    }
+
+    @Override
+    @Transactional
+    public void deleteProject(Long projectId) throws IllegalAccessException {
+        Project project = this.projectRepository.getProjectById(projectId)
+                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+
+        validateUserAction(projectId);
+
+//        User assignedUser = project.getUser();
+//
+//        assignedUser.getProjects().remove(project);
+//        project.setUser(null);
+//
+//        this.userRepository.save(assignedUser);
+        this.projectRepository.delete(project);
+    }
+
+    private void validateUserAction(Long projectId) throws IllegalAccessException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUsername = authentication.getName();
+        User loggedUser = this.userService.getByUsername(loggedUsername);
+
+        Project project = getById(projectId);
+
+        User assignedUser = project.getUser();
+
+        if(assignedUser == null) {
+            return;
+        }
+
+        if(assignedUser.getTeam() == null) {
+            return;
+        }
+
+        if(this.userService.hasRole(loggedUser.getId(), "ROLE_ADMIN")) {
+            return;
+        }
+
+        boolean isLoggedUserCorrectTeamLeader = loggedUser.getTeam().getId().equals(assignedUser.getTeam().getId());
+
+        if(!isLoggedUserCorrectTeamLeader) {
+            throw new IllegalAccessException(String.format(USER_NOT_LEADER_OF_THIS_TEAM, loggedUsername, assignedUser.getUsername()));
+        }
+
     }
 
     @Override

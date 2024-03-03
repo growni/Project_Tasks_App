@@ -42,14 +42,9 @@ public class DashboardController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        boolean isUserLeader = authentication.getAuthorities()
-                .stream()
-                .anyMatch(r -> r.getAuthority().equals("ROLE_LEADER"));
-
         User user = this.userService.getByUsername(username);
 
-        List<Project> projects = isUserLeader ? this.projectService.getTeamProjects(user.getTeam().getId())
-                                                 : this.projectService.findProjectByUsername(username);
+        List<Project> projects = this.projectService.findProjectByUsername(username);
 
         model.addAttribute("username", username);
         model.addAttribute("projects", projects);

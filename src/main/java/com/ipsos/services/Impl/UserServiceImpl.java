@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -147,6 +148,9 @@ public class UserServiceImpl implements UserService {
         for (Project project : userProjects) {
             project.setUser(null);
         }
+
+        user.setProjects(new ArrayList<>());
+        user.setTeam(null);
 
         this.projectRepository.saveAll(userProjects);
         this.userRepository.delete(user);
