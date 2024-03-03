@@ -86,6 +86,10 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
+            throw new InvalidDataException(CONFIRM_PASSWORD_INCORRECT);
+        }
+
     }
 
     private void validateRole(Role role) {

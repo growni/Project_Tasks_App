@@ -7,14 +7,16 @@ import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,29 +29,34 @@ import static com.ipsos.constants.ErrorMessages.AuthOperations.CONFIRM_PASSWORD_
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ModelAndView registerUser(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes) {
-
-        ModelAndView view = new ModelAndView("redirect:/register");
-
-        System.out.println(userDto);
-
-        if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-            redirectAttributes.addFlashAttribute("errorMessage", CONFIRM_PASSWORD_INCORRECT);
-
-            return view;
-        }
+    public ModelAndView registerUser(@ModelAttribute UserDto userDto, HttpServletRequest request) {
 
         userService.registerUser(userDto);
 
-        view.setViewName("redirect:/dashboard");
+        authenticateUserAfterRegistration(request, userDto.getUsername(), userDto.getConfirmPassword());
+
+        ModelAndView view = new ModelAndView("redirect:/dashboard");
+
         return view;
+    }
+
+    public void authenticateUserAfterRegistration(HttpServletRequest request, String username, String password) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        authToken.setDetails(new WebAuthenticationDetails(request));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)

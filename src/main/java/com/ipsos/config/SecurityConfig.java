@@ -41,6 +41,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
+                .requestMatchers("/register").anonymous()
                 .requestMatchers("/dashboard/addProject").hasAnyRole("ADMIN", "LEADER")
                 .requestMatchers("/project/editProject").hasAnyRole("ADMIN", "LEADER")
                 .requestMatchers("/project/assignUser").hasAnyRole("ADMIN", "LEADER")
@@ -57,10 +58,11 @@ public class SecurityConfig {
                 .requestMatchers("/team/assignLeader").hasRole("ADMIN")
                 .requestMatchers("/team/**").hasAnyRole("ADMIN", "LEADER", "DEVELOPER")
                 .requestMatchers("/projects").hasAnyRole("ADMIN", "LEADER")
-                .anyRequest().permitAll()
+                .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
+                .loginPage("/login")
                 .defaultSuccessUrl("/dashboard")
                 .and()
                 .logout()
@@ -70,6 +72,11 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .permitAll();
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new AccessDeniedHandler();
     }
 
     @Bean
