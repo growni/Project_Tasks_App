@@ -199,20 +199,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getTeamProjects(Long teamId) {
-        Team team = this.teamService.getById(teamId);
-        List<User> members = team.getMembers();
-
-        List<Project> teamProjects = new ArrayList<>();
-
-        for (User member : members) {
-            teamProjects.addAll(member.getProjects());
-        }
-
-        return teamProjects;
-    }
-
-    @Override
     @Transactional
     public void deleteProject(Long projectId) throws IllegalAccessException {
         Project project = getById(projectId);

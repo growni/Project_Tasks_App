@@ -1,5 +1,6 @@
 package com.ipsos.services.Impl;
 
+import com.ipsos.entities.Project;
 import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
@@ -157,20 +158,6 @@ public class TeamServiceImpl implements TeamService {
             throw new EntityMissingFromDatabase(String.format(USER_NOT_IN_TEAM, user.getUsername(), team.getName()));
         }
 
-//        if (team.getTeamLeader() != null && team.getTeamLeader().getId().equals(memberId)) {
-//            this.userService.removeRole(memberId, "ROLE_LEADER");
-//            team.setTeamLeader(null);
-//
-//
-//            Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
-//            if (currentAuthentication != null && currentAuthentication.getName().equals(user.getUsername())) {
-//                Collection<? extends GrantedAuthority> updatedAuthorities = new ArrayList<>(currentAuthentication.getAuthorities());
-//                updatedAuthorities.remove(new SimpleGrantedAuthority("ROLE_LEADER"));
-//                Authentication newAuthentication = new UsernamePasswordAuthenticationToken(currentAuthentication.getPrincipal(), currentAuthentication.getCredentials(), updatedAuthorities);
-//                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-//            }
-//        }
-
         validateUserAction(teamId);
 
         if(this.userService.hasRole(memberId, "ROLE_LEADER")) {
@@ -183,5 +170,26 @@ public class TeamServiceImpl implements TeamService {
 
         user.setTeam(null);
         this.userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getTeamMembers(Long teamId) {
+        Team team = getById(teamId);
+
+        return team.getMembers();
+    }
+
+    @Override
+    public List<Project> getTeamProjects(Long teamId) {
+        Team team = getById(teamId);
+        List<User> members = team.getMembers();
+
+        List<Project> teamProjects = new ArrayList<>();
+
+        for (User member : members) {
+            teamProjects.addAll(member.getProjects());
+        }
+
+        return teamProjects;
     }
 }

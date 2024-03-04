@@ -23,7 +23,6 @@ public interface ProjectService {
    void assignUser(String username, Long projectId) throws IllegalAccessException;
    void removeUser(String username, Long projectId);
    List<Project> findProjectByUsername(String username);
-   List<Project> getTeamProjects(Long teamId);
    void deleteProject(Long projectId) throws IllegalAccessException;
 
 
