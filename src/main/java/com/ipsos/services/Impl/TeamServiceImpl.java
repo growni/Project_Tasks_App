@@ -57,8 +57,7 @@ public class TeamServiceImpl implements TeamService {
     public void assignLeader(Long teamId, String leaderUsername) {
         Team team = getById(teamId);
 
-        User user = this.userRepository.getByUsername(leaderUsername)
-                .orElseThrow(() -> new EntityMissingFromDatabase(String.format(USERNAME_NOT_FOUND, leaderUsername)));
+        User user = this.userService.getByUsername(leaderUsername);
 
         if(user.getTeam() != null) {
             if(team.getTeamLeader() != null && team.getTeamLeader().getUsername().equals(leaderUsername)) {

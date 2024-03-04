@@ -87,9 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateJobNumber(Long projectId, String jobNumber) {
 
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
+        Project project = getById(projectId);
         project.setJobNumber(jobNumber);
 
         this.projectRepository.save(project);
@@ -100,17 +98,16 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = this.projectRepository.getProjectById(id)
                 .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
 
-
         return project;
     }
 
     @Override
-    public void updateProject(ProjectDto projectDto) {
+    public void updateProject(ProjectDto projectDto) throws IllegalAccessException {
 
         validateProjectDto(projectDto);
+        validateUserAction(projectDto.getId());
 
-        Project currentProject = this.projectRepository.findById(projectDto.getId())
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+        Project currentProject = getById(projectDto.getId());
 
         if(currentProject.getUser() != null) {
             projectDto.setUser(currentProject.getUser());
@@ -121,49 +118,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void updateDueDate(Long projectId, LocalDate newDate) {
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
-        LocalDate currentDate = LocalDate.now();
-        if(newDate.isBefore(currentDate)) {
-            throw new IllegalArgumentException(DATE_MUST_BE_IN_FUTURE);
-        }
-
-        project.setDueDate(newDate);
-        projectRepository.save(project);
-    }
-
-    @Override
-    public void updateStatus(Long projectId, Status status) {
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
-        project.setStatus(status);
-        this.projectRepository.save(project);
-    }
-
-    @Override
-    public void updatePriority(Long projectId, Priority priority) {
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
-        project.setPriority(priority);
-        this.projectRepository.save(project);
-    }
-
-    @Override
-    public void addTask(Long projectId, Task task) {
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+    public void addTask(Long projectId, Task task) throws IllegalAccessException {
+        Project project = getById(projectId);
 
         project.getTasks().add(task);
         this.projectRepository.save(project);
 
         task.setProject(project);
         this.taskRepository.save(task);
-
-
     }
 
     @Override
@@ -192,11 +154,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void assignUser(String username, Long projectId) throws IllegalAccessException {
-        User user = this.userRepository.getByUsername(username)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = this.userService.getByUsername(username);
 
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+        Project project = getById(projectId);
 
         User assignedUser = project.getUser();
 
@@ -216,11 +176,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void removeUser(String username, Long projectId) {
-        User user = this.userRepository.getByUsername(username)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = this.userService.getByUsername(username);
 
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+        Project project = getById(projectId);
 
         User assignedUser = project.getUser();
 
@@ -257,17 +215,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void deleteProject(Long projectId) throws IllegalAccessException {
-        Project project = this.projectRepository.getProjectById(projectId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
+        Project project = getById(projectId);
 
         validateUserAction(projectId);
 
-//        User assignedUser = project.getUser();
-//
-//        assignedUser.getProjects().remove(project);
-//        project.setUser(null);
-//
-//        this.userRepository.save(assignedUser);
         this.projectRepository.delete(project);
     }
 
@@ -292,7 +243,7 @@ public class ProjectServiceImpl implements ProjectService {
             return;
         }
 
-        boolean isLoggedUserCorrectTeamLeader = loggedUser.getTeam().getId().equals(assignedUser.getTeam().getId());
+        boolean isLoggedUserCorrectTeamLeader = this.userService.hasRole(loggedUser.getId(), "ROLE_LEADER") && loggedUser.getTeam().getId().equals(assignedUser.getTeam().getId());
 
         if(!isLoggedUserCorrectTeamLeader) {
             throw new IllegalAccessException(String.format(USER_NOT_LEADER_OF_THIS_TEAM, loggedUsername, assignedUser.getUsername()));

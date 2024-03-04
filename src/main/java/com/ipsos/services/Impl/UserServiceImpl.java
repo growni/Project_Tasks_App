@@ -130,8 +130,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addRoleToUser(String username, Role role) {
-        User user = this.userRepository.getByUsername(username)
-                .orElseThrow(() -> new EntityMissingFromDatabase(String.format(USERNAME_NOT_FOUND, username)));
+        User user = getByUsername(username);
 
         user.getRoles().add(role);
         this.userRepository.save(user);
@@ -140,8 +139,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long userId) {
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         List<Project> userProjects = user.getProjects();
 
@@ -158,12 +156,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUsername(Long userId, String username) {
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
-        Optional<User> byUsername = this.userRepository.getByUsername(username);
+        User byUsername = getByUsername(username);
 
-        if(byUsername.isPresent()) {
+        if(byUsername != null) {
             throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, username));
         }
 
@@ -183,8 +180,7 @@ public class UserServiceImpl implements UserService {
             throw new InvalidDataException(INVALID_PASSWORD);
         }
 
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         if(passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidDataException(NEW_PASSWORD_IS_OLD_PASSWORD);
@@ -202,8 +198,7 @@ public class UserServiceImpl implements UserService {
 
         validateRole(role);
 
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         Role roleFromDB = this.roleRepository.findByName(role.getName());
 
@@ -220,8 +215,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeRole(Long userId, String roleType) {
 
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         Role role = user.getRoles()
                 .stream()
@@ -238,8 +232,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void disableAccount(Long userId) {
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         user.setEnabled(false);
 
@@ -248,8 +241,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activateAccount(Long userId) {
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         user.setEnabled(true);
 
@@ -263,8 +255,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void joinTeam(Long userId, Long teamId) throws IllegalAccessException {
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(USER_NOT_FOUND));
+        User user = getById(userId);
 
         boolean userHasTeam = user.getTeam() != null;
 

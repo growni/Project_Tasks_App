@@ -61,7 +61,7 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/project/deleteTask")
-    public String deleteTask(@RequestParam Long taskId, @RequestParam Long projectId) throws AccessDeniedException {
+    public String deleteTask(@RequestParam Long taskId, @RequestParam Long projectId) throws IllegalAccessException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -71,13 +71,9 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/project/{projectId}")
-    public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws AccessDeniedException {
+    public String addTask(@RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws IllegalAccessException {
 
-        printUserRoles();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Task task = this.taskService.createTask(projectId, taskDto, authentication);
+        Task task = this.taskService.createTask(projectId, taskDto);
         this.projectService.addTask(projectId, task);
 
         return "redirect:/project/" + projectId;
@@ -85,23 +81,20 @@ public class ProjectController {
 
 
     @PostMapping(value = "/project/editTask")
-    public String editTask(@RequestParam Long taskId, @RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws AccessDeniedException {
+    public String editTask(@RequestParam Long taskId, @RequestParam Long projectId, @ModelAttribute TaskDto taskDto) throws IllegalAccessException {
 
         taskDto.setId(taskId);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        this.taskService.updateTask(projectId, taskDto, authentication);
+        this.taskService.updateTask(projectId, taskDto);
 
         return "redirect:/project/" + projectId;
     }
 
     @PostMapping(value = "/project/editProject")
-    public String editProject(@RequestParam Long projectId, @ModelAttribute ProjectDto projectDto) {
+    public String editProject(@RequestParam Long projectId, @ModelAttribute ProjectDto projectDto) throws IllegalAccessException {
 
         projectDto.setId(projectId);
 
-        System.out.println(projectDto);
         this.projectService.updateProject(projectDto);
 
         return "redirect:/project/" + projectId;

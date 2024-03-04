@@ -35,8 +35,8 @@ public class Runner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        createEntities();
-    //    operations();
+        createEntities();
+//        operations();
 
     }
 

@@ -1,7 +1,7 @@
 package com.ipsos.services.Impl;
 
+import com.ipsos.entities.BaseEntity;
 import com.ipsos.entities.Project;
-import com.ipsos.entities.Role;
 import com.ipsos.entities.Task;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.TaskDto;
@@ -10,38 +10,40 @@ import com.ipsos.entities.enums.Status;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
 import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.repositories.TaskRepository;
-import com.ipsos.repositories.UserRepository;
+import com.ipsos.services.ProjectService;
 import com.ipsos.services.TaskService;
+import com.ipsos.services.UserService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Optional;
 
-import static com.ipsos.constants.ErrorMessages.AuthOperations.ACTION_NOT_ALLOWED;
 import static com.ipsos.constants.ErrorMessages.TaskOperations.TASK_DESCRIPTION_CANT_BE_NULL;
 import static com.ipsos.constants.ErrorMessages.TaskOperations.TASK_NOT_FOUND;
+import static com.ipsos.constants.ErrorMessages.TeamOperations.USER_NOT_LEADER_OF_THIS_TEAM;
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
+    private final ProjectService projectService;
+    private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, ProjectService projectService, UserService userService, ModelMapper modelMapper) {
         this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
+        this.projectService = projectService;
+        this.userService = userService;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    public Task createTask(Long projectId, TaskDto taskDto, Authentication authentication) throws AccessDeniedException {
+    public Task createTask(Long projectId, TaskDto taskDto) throws IllegalAccessException {
 
-        authenticateUserAction(projectId, authentication);
+        validateUserAction(projectId);
         validateTaskDto(taskDto);
 
         Task task = this.modelMapper.map(taskDto, Task.class);
@@ -51,12 +53,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public void deleteTask(Long projectId, Long taskId, Authentication authentication) throws AccessDeniedException {
+    public void deleteTask(Long projectId, Long taskId, Authentication authentication) throws IllegalAccessException {
 
-        authenticateUserAction(projectId, authentication);
+        validateUserAction(projectId);
 
-        Task task = this.taskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));
+        Task task = getById(taskId);
 
         this.taskRepository.delete(task);
         this.taskRepository.flush();
@@ -102,42 +103,50 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void updateTask(Long projectId, TaskDto taskDto, Authentication authentication) throws AccessDeniedException {
+    public void updateTask(Long projectId, TaskDto taskDto) throws IllegalAccessException {
 
-        authenticateUserAction(projectId, authentication);
+        validateUserAction(projectId);
         validateTaskDto(taskDto);
 
-        Task currentTask = this.taskRepository.findById(taskDto.getId())
-                .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));
+        Task currentTask = getById(taskDto.getId());
 
         this.modelMapper.map(taskDto, currentTask);
 
         this.taskRepository.save(currentTask);
     }
 
-    private void authenticateUserAction(Long projectId, Authentication authentication) throws AccessDeniedException {
-        if(authentication == null) {
-            throw new AccessDeniedException(ACTION_NOT_ALLOWED);
+    private void validateUserAction(Long projectId) throws IllegalAccessException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUsername = authentication.getName();
+        User loggedUser = this.userService.getByUsername(loggedUsername);
+
+        Project project = this.projectService.getById(projectId);
+
+        User assignedUser = project.getUser();
+
+        if(assignedUser == null) {
+            return;
         }
 
-        String username = authentication.getName();
-        User user = this.userRepository.getByUsername(username).get();
-
-        Optional<Long> userProjectId = user.getProjects()
-                .stream()
-                .map(Project::getId)
-                .filter(id -> id.equals(projectId))
-                .findFirst();
-
-        List<String> userRoles = user.getRoles()
-                .stream()
-                .filter(r ->
-                        (r.getName().equals("ROLE_ADMIN") || r.getName().equals("ROLE_LEADER"))
-                ).map(Role::getName)
-                .toList();
-
-        if(userProjectId.isEmpty() && userRoles.size() == 0) {
-            throw new AccessDeniedException(ACTION_NOT_ALLOWED);
+        if(assignedUser.getTeam() == null) {
+            return;
         }
+
+        if(this.userService.hasRole(loggedUser.getId(), "ROLE_ADMIN")) {
+            return;
+        }
+
+        boolean isLoggedUserCorrectTeamLeader = this.userService.hasRole(loggedUser.getId(), "ROLE_LEADER") && loggedUser.getTeam().getId().equals(assignedUser.getTeam().getId());
+
+        if(isLoggedUserCorrectTeamLeader) {
+           return;
+        }
+
+        boolean isProjectAssignedToLoggedUser = loggedUser.getProjects().stream().map(BaseEntity::getId).anyMatch(id -> id.equals(projectId));
+
+        if(!isProjectAssignedToLoggedUser) {
+            throw new IllegalAccessException(String.format(USER_NOT_LEADER_OF_THIS_TEAM, loggedUsername, assignedUser.getUsername()));
+        }
+
     }
 }

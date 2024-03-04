@@ -15,11 +15,8 @@ public interface ProjectService {
 
     Project getById(Long id);
 
-    void updateProject(ProjectDto projectDto);
-    void updateDueDate(Long projectId, LocalDate date);
-    void updateStatus(Long projectId, Status status);
-    void updatePriority(Long projectId, Priority priority);
-    void addTask(Long projectId, Task task);
+    void updateProject(ProjectDto projectDto) throws IllegalAccessException;
+    void addTask(Long projectId, Task task) throws IllegalAccessException;
    List<ProjectDto> getAllProjectsDto();
    List<Project> getAllProjects();
    ProjectDto getByIdDto(Long projectId);
