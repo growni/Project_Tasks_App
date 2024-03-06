@@ -2,11 +2,8 @@ package com.ipsos.services.Impl;
 
 import com.ipsos.entities.Project;
 import com.ipsos.entities.Task;
-import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.ProjectDto;
-import com.ipsos.entities.enums.Priority;
-import com.ipsos.entities.enums.Status;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
 import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.exceptions.UserAlreadyAssignedException;
@@ -14,7 +11,6 @@ import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.TaskRepository;
 import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.ProjectService;
-import com.ipsos.services.TeamService;
 import com.ipsos.services.UserService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -29,7 +25,6 @@ import java.util.List;
 import static com.ipsos.constants.ErrorMessages.GenericOperations.DATE_MUST_BE_IN_FUTURE;
 import static com.ipsos.constants.ErrorMessages.ProjectOperations.*;
 import static com.ipsos.constants.ErrorMessages.TeamOperations.USER_NOT_LEADER_OF_THIS_TEAM;
-import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
 import static com.ipsos.constants.Regex.NAME_REGEX;
 
 @Service
@@ -37,15 +32,14 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-    private final TeamService teamService;
     private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, TeamService teamService, UserService userService, ModelMapper modelMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, UserService userService, ModelMapper modelMapper) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-        this.teamService = teamService;
+
         this.userService = userService;
         this.modelMapper = modelMapper;
 
@@ -95,10 +89,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project getById(Long id) {
-        Project project = this.projectRepository.getProjectById(id)
+        return this.projectRepository.getProjectById(id)
                 .orElseThrow(() -> new EntityMissingFromDatabase(PROJECT_NOT_FOUND));
-
-        return project;
     }
 
     @Override
@@ -118,7 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void addTask(Long projectId, Task task) throws IllegalAccessException {
+    public void addTask(Long projectId, Task task) {
         Project project = getById(projectId);
 
         project.getTasks().add(task);

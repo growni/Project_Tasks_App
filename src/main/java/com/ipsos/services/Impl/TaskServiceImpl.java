@@ -5,8 +5,6 @@ import com.ipsos.entities.Project;
 import com.ipsos.entities.Task;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.TaskDto;
-import com.ipsos.entities.enums.Priority;
-import com.ipsos.entities.enums.Status;
 import com.ipsos.exceptions.EntityMissingFromDatabase;
 import com.ipsos.exceptions.InvalidDataException;
 import com.ipsos.repositories.TaskRepository;
@@ -61,24 +59,6 @@ public class TaskServiceImpl implements TaskService {
 
         this.taskRepository.delete(task);
         this.taskRepository.flush();
-    }
-
-    @Override
-    public void updateStatus(Long taskId, Status status) {
-        Task task = this.taskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));
-
-        task.setStatus(status);
-        this.taskRepository.save(task);
-    }
-
-    @Override
-    public void updatePriority(Long taskId, Priority priority) {
-        Task task = this.taskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityMissingFromDatabase(TASK_NOT_FOUND));
-
-        task.setPriority(priority);
-        this.taskRepository.save(task);
     }
 
     private void validateTaskDto(TaskDto taskDto) {

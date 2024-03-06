@@ -1,6 +1,5 @@
 package com.ipsos.controllers;
 
-import com.ipsos.entities.Project;
 import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
 import com.ipsos.services.TeamService;
@@ -117,9 +116,6 @@ public class TeamController {
     public String teamProjectsView(@RequestParam Long teamId, Model model) {
         List<User> teamMembers = this.teamService.getTeamMembers(teamId);
         model.addAttribute("teamMembers", teamMembers);
-
-//        List<Project> teamProjects = this.teamService.getTeamProjects(teamId);
-//        model.addAttribute("teamProjects", teamProjects);
 
         return "team_projects";
     }

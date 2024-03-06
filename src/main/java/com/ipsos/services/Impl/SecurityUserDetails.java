@@ -17,9 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.ipsos.constants.ErrorMessages.UserOperations.USERNAME_NOT_FOUND;
-import static com.ipsos.constants.ErrorMessages.UserOperations.USER_NOT_FOUND;
-
 
 @Service("userDetailsService")
 @Transactional

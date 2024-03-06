@@ -11,8 +11,6 @@ import java.nio.file.AccessDeniedException;
 public interface TaskService {
     Task createTask(Long projectId, TaskDto taskDto) throws IllegalAccessException;
     void deleteTask(Long projectId, Long taskId, Authentication authentication) throws IllegalAccessException;
-    void updateStatus(Long taskId, Status status);
-    void updatePriority(Long taskId, Priority priority);
     Task getById(Long taskId);
     void updateTask(Long projectId, TaskDto taskDto) throws IllegalAccessException;
 }
