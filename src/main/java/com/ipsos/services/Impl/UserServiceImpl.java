@@ -122,8 +122,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByUsername(String username) {
-        User user = this.userRepository.getByUsername(username)
-                .orElseThrow(() -> new EntityMissingFromDatabase(String.format(USERNAME_NOT_FOUND, username)));
+        User user = this.userRepository.getByUsername(username).orElse(null);
 
         return user;
     }
@@ -148,6 +147,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setProjects(new ArrayList<>());
+        user.setRoles(null);
         user.setTeam(null);
 
         this.projectRepository.saveAll(userProjects);
@@ -160,6 +160,7 @@ public class UserServiceImpl implements UserService {
 
         User byUsername = getByUsername(username);
 
+        System.out.println(byUsername);
         if(byUsername != null) {
             throw new UsernameAlreadyExistsException(String.format(USER_EXISTS, username));
         }
@@ -187,6 +188,29 @@ public class UserServiceImpl implements UserService {
         }
 
         String hashedPassword = this.passwordEncoder.encode(password);
+        user.setPassword(hashedPassword);
+
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(Long userId, String currentPassword, String newPassword) {
+
+        if(!isValidPassword(newPassword)) {
+            throw new InvalidDataException(INVALID_PASSWORD);
+        }
+
+        User user = getById(userId);
+
+        if(!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new InvalidDataException(INVALID_PASSWORD);
+        }
+
+        if(passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new InvalidDataException(NEW_PASSWORD_IS_OLD_PASSWORD);
+        }
+
+        String hashedPassword = this.passwordEncoder.encode(newPassword);
         user.setPassword(hashedPassword);
 
         this.userRepository.save(user);

@@ -39,7 +39,6 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-
         this.userService = userService;
         this.modelMapper = modelMapper;
 
@@ -76,15 +75,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         return true;
 
-    }
-
-    @Override
-    public void updateJobNumber(Long projectId, String jobNumber) {
-
-        Project project = getById(projectId);
-        project.setJobNumber(jobNumber);
-
-        this.projectRepository.save(project);
     }
 
     @Override

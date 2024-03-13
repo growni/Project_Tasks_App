@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/profile.css" />
     <title>User Profile</title>
 </head>
 <body>
-<h1>User Profile</h1>
+
 
 <style>
         /* Your CSS styles here */
@@ -15,35 +16,45 @@
         }
     </style>
 
-<div>
-    <p><strong>Username:</strong> <span th:text="${username}"></span></p>
-    <p><strong>Roles:</strong>
-        <span th:each="role : ${roles}">
-            <span th:text="${role}"></span>
-            <span th:if="${!roleStat.last}">, </span> <!-- Add comma if not the last role -->
-        </span>
-    </p>
-    <!-- Button to redirect the user to the change password page -->
-    <a href="/profile/change-password">Change Password</a>
-    <button id="changeUsernameBtn" onclick="toggleForm()">Change Username</button>
-    <form id="usernameForm" class="hidden" th:action="@{/profile/changeUsername}" method="post">
-        <label for="newUsername">New Username:</label>
-        <input type="text" id="newUsername" name="newUsername" required><br>
-        <button type="submit">Save</button>
-        <button type="button" onclick="cancelEdit()">Cancel</button>
-    </form>
+<div class="full-screen-container">
+
+    <div class="profile-section">
+        <h1>User Profile</h1>
+        <p><strong>Username:</strong> <span th:text="${username}">asdasd</span></p>
+        <div class="roles-section">
+            <p><strong>Roles:</strong></p>
+            <span th:each="role : ${roles}">
+                    <span th:text="${role}"></span>
+                    <span th:if="${!roleStat.last}">asdas,adadad, dasd </span> <!-- Add comma if not the last role -->
+                </span>
+        </div>
+        <!-- Button to redirect the user to the change password page -->
+        <a class="btn1-element" href="/profile/change-password">Change Password</a>
+        <button class="btn1-element" id="changeUsernameBtn" onclick="toggleForm()">Change Username</button>
+        <form id="usernameForm" class="hidden" th:action="@{/profile/changeUsername}" method="post">
+            <label for="newUsername">New Username:</label>
+            <input type="text" id="newUsername" name="newUsername" required><br>
+            <div class="btn-group">
+                <button type="submit" class="btn1-element">Save</button>
+                <button type="button" class="btn1-element" onclick="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
     function toggleForm() {
         var form = document.getElementById("usernameForm");
-        form.classList.toggle("hidden");
+        form.style.display = "flex";
+        // form.classList.toggle("hidden");
     }
 
     function cancelEdit() {
         var form = document.getElementById("usernameForm");
         form.reset();
-        form.classList.add("hidden");
+        form.style.display = "none";
+
+        // form.classList.add("hidden");
     }
 </script>
 

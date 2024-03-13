@@ -11,10 +11,7 @@ import java.util.List;
 
 public interface ProjectService {
     Project createProject(ProjectDto projectDto);
-    void updateJobNumber(Long projectId, String jobNumber);
-
     Project getById(Long id);
-
     void updateProject(ProjectDto projectDto) throws IllegalAccessException;
     void addTask(Long projectId, Task task) throws IllegalAccessException;
    List<ProjectDto> getAllProjectsDto();
@@ -24,6 +21,4 @@ public interface ProjectService {
    void removeUser(String username, Long projectId);
    List<Project> findProjectByUsername(String username);
    void deleteProject(Long projectId) throws IllegalAccessException;
-
-
 }

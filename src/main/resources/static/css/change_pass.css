@@ -26,7 +26,7 @@ body {
     align-items: center;
 }
 
-.register-container {
+.login-container {
     --color: hsl(var(--primary-dark-hsl), .7);
     background-color: var(--color);
     box-shadow: 0 0 15px 0 var(--color);
@@ -36,7 +36,7 @@ body {
     border-radius: 20px;
 }
 
-.register-title {
+.login-title {
     margin: 0;
     color: white;
     text-align: center;
@@ -55,6 +55,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 7px;
+    margin: 29px 0 0 0;
 }
 
 .input-group label {
@@ -103,7 +104,7 @@ body {
     color: hsl(var(--success-hsl));
 }
 
-.register-button {
+.login-button {
     padding: .5em 1em;
     font-size: 1.5rem;
     font-weight: lighter;
@@ -113,9 +114,11 @@ body {
     border-radius: .25em;
     outline: none;
     cursor: pointer;
+    width: 100%;
+    margin: 19px 0 0 0;
 }
 
-.register-button:hover,
-.register-button:focus {
+.login-button:hover,
+.login-button:focus {
     background-color: hsl(var(--primary-hsl), .4);
 }

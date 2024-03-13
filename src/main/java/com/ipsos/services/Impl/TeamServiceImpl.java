@@ -62,8 +62,10 @@ public class TeamServiceImpl implements TeamService {
 
         User currentTeamLeader = team.getTeamLeader();
 
+        clearTeamLeaderRoles(team.getId());
+
         if(currentTeamLeader != null && !currentTeamLeader.equals(user)) {
-            this.userService.removeRole(currentTeamLeader.getId(), "ROLE_LEADER");
+//            this.userService.removeRole(currentTeamLeader.getId(), "ROLE_LEADER");
             this.userRepository.save(currentTeamLeader);
         }
 
@@ -73,6 +75,16 @@ public class TeamServiceImpl implements TeamService {
 
         team.setTeamLeader(user);
         this.teamRepository.save(team);
+    }
+
+    private void clearTeamLeaderRoles(Long teamId) {
+        Team team = getById(teamId);
+
+        for (User member : team.getMembers()) {
+            if (this.userService.hasRole(member.getId(), "ROLE_LEADER")) {
+                this.userService.removeRole(member.getId(), "ROLE_LEADER");
+            }
+        }
     }
 
     @Override

@@ -4,12 +4,14 @@ import com.ipsos.entities.Role;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
 import com.ipsos.exceptions.InvalidDataException;
+import com.ipsos.services.Impl.SecurityUserDetails;
 import com.ipsos.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -29,11 +31,13 @@ public class UserController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final SecurityUserDetails userDetails;
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, SecurityUserDetails userDetails) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
+        this.userDetails = userDetails;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -102,18 +106,18 @@ public class UserController {
     }
 
     @PostMapping("/profile/change-password")
-    public ModelAndView changePassword(@RequestParam String password, @RequestParam String confirmPassword) {
+    public ModelAndView changePassword(@RequestParam String currentPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        if(!password.equals(confirmPassword)) {
-            throw new InvalidDataException(CONFIRM_PASSWORD_INCORRECT);
-        }
+//        if(!newPassword.equals(confirmPassword)) {
+//            throw new InvalidDataException(CONFIRM_PASSWORD_INCORRECT);
+//        }
 
         Long userId = this.userService.getByUsername(username).getId();
 
-        this.userService.updatePassword(userId, password);
+        this.userService.updatePassword(userId, currentPassword, newPassword);
 
         ModelAndView view = new ModelAndView();
         view.setViewName("redirect:/profile");
@@ -122,15 +126,15 @@ public class UserController {
     }
 
     @PostMapping("/profile/changeUsername")
-    public ModelAndView changePassword(@RequestParam String newUsername) {
+    public ModelAndView changeUsername(@RequestParam String newUsername) {
 
         Authentication oldAuthentication = SecurityContextHolder.getContext().getAuthentication();
         String oldUsername = oldAuthentication.getName();
 
         Long userId = this.userService.getByUsername(oldUsername).getId();
 
+        System.out.println("New Username = " + newUsername);
         this.userService.updateUsername(userId, newUsername);
-
         User updatedUser = userService.getByUsername(newUsername);
 
         Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, oldAuthentication.getCredentials(), oldAuthentication.getAuthorities());

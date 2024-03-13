@@ -41,19 +41,19 @@ public class AdminController {
     }
 
     @GetMapping(value = "/user_details/{userId}/delete")
-    public ModelAndView showDeleteConfirmation(@PathVariable Long userId) {
+    public ModelAndView deleteConfirmationView(@PathVariable Long userId) {
+
+        User user = this.userService.getById(userId);
 
         ModelAndView view = new ModelAndView("delete_confirmation");
         view.addObject("userId", userId);
+        view.addObject("username", user.getUsername());
 
         return view;
     }
 
-    @RequestMapping(value ="/user_details/{userId}/delete", method = RequestMethod.POST)
-    public String deleteUser(@PathVariable Long userId, Model model) {
-
-        User user = this.userService.getById(userId);
-        model.addAttribute("user", user);
+    @RequestMapping(value ="/user_details/{userId}/delete_confirmation", method = RequestMethod.POST)
+    public String deleteUser(@PathVariable Long userId) {
 
         this.userService.deleteUser(userId);
 

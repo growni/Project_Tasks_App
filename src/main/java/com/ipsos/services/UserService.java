@@ -6,6 +6,7 @@ import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserService {
@@ -15,7 +16,8 @@ public interface UserService {
     void addRoleToUser(String username, Role role);
     void deleteUser(Long userId);
     void updateUsername(Long userId, String username);
-    void updatePassword(Long userId, String password);
+    void updatePassword(Long userId, String currentPassword, String newPassword);
+    void updatePassword(Long userId, String newPassword);
     void addRole(Long userId, String roleType);
 
     boolean hasRole(Long userId, String roleType);

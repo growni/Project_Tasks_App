@@ -1,0 +1,66 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+    --primary-light-hsl: 200, 100%, 91%;
+    --primary-hsl: 200, 100%, 50%;
+    --primary-dark-hsl: 200, 100%, 6%;
+    --success-hsl: 100, 60%, 50%;
+    --error-hsl: 0, 60%, 50%;
+}
+
+body {
+    margin: 0;
+}
+
+.full-screen-container {
+    background-image: url("../images/background.jpg");
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.conf-tab {
+    width: 30rem;
+    background-color: #00000070;
+    text-align: center;
+    padding: 4rem;
+    border-radius: 8px;
+    color: #fff;
+    margin-bottom: 15%;
+}
+
+
+
+.conf-tab form {
+    display: flex;
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top:2rem;
+}
+
+.conf-tab form button {
+    background: none;
+    color: #fff;
+    border: 1px solid #ffffff40;
+    padding-inline: 3rem;
+    padding-block: 0.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+
+.conf-tab form button:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 6px #fff;
+
+}

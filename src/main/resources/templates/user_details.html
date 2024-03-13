@@ -57,10 +57,11 @@
     <button type="submit">Remove</button>
 </form>
 
-<form th:action="@{/admin/user_details/{userId}/delete(userId=${user.id})}" method="post">
-  <input type="hidden" name="userId" th:value="${user.id}">
-  <button type="submit">Delete Account</button>
+<form th:action="@{/admin/user_details/{userId}/delete(userId=${user.id})}" method="get">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <button type="submit">Delete Account</button>
 </form>
+
 
 <form th:action="@{/admin/user_details/{userId}/disable(userId=${user.id})}" method="post">
     <input type="hidden" name="userId" th:value="${user.id}">
