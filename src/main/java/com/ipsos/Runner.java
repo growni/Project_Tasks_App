@@ -9,6 +9,7 @@ import com.ipsos.repositories.UserRepository;
 import com.ipsos.services.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -20,24 +21,23 @@ public class Runner implements ApplicationRunner {
     private final TeamService teamService;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-    private final TaskService taskService;
-    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public Runner(UserService userService, ProjectService projectService, TeamService teamService, UserRepository userRepository, TeamRepository teamRepository, TaskService taskService, RoleService roleService) {
+    public Runner(UserService userService, ProjectService projectService, TeamService teamService,
+                  UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.projectService = projectService;
         this.teamService = teamService;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
-        this.taskService = taskService;
-        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        createEntities();
 //        operations();
-
     }
 
 

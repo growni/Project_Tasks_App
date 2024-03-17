@@ -3,9 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <title>Team Details</title>
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Your Brand</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin">Admin</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/projects">Projects</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/teams">Teams</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 <h1>Team Details</h1>
 <div>
   <p><strong>Team Name:</strong> <span id="teamName" th:text="${team.name}"></span></p>

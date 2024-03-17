@@ -3,11 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="/css/profile.css" />
     <title>User Profile</title>
 </head>
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Your Brand</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/projects">Projects</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/teams">Teams</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 <style>
         /* Your CSS styles here */
@@ -20,12 +54,12 @@
 
     <div class="profile-section">
         <h1>User Profile</h1>
-        <p><strong>Username:</strong> <span th:text="${username}">asdasd</span></p>
+        <p><strong>Username:</strong> <span th:text="${username}"></span></p>
         <div class="roles-section">
             <p><strong>Roles:</strong></p>
             <span th:each="role : ${roles}">
                     <span th:text="${role}"></span>
-                    <span th:if="${!roleStat.last}">asdas,adadad, dasd </span> <!-- Add comma if not the last role -->
+                    <span th:if="${!roleStat.last}"></span> <!-- Add comma if not the last role -->
                 </span>
         </div>
         <!-- Button to redirect the user to the change password page -->

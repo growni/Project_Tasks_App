@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/team_projects.css" />
+    <link rel="stylesheet" href="/css/navigation.css" />
     <title>Team Projects</title>
     <style>
         /* Add your CSS styles here */
@@ -34,24 +36,172 @@
     </style>
 </head>
 <body>
-<!-- Iterate over each user and display their assigned projects -->
-<div th:each="user : ${teamMembers}">
-    <!-- Container for user projects -->
-    <div class="user-container">
-        <!-- Title with the username of the user -->
-        <h2 class="user-title" th:text="${user.username}"></h2>
+<!-- <div class="navigation">
+    <ul>
+        <li><a href="default.asp">Pdasda</a></li>
+        <li><a href="news.asp">News</a></li>
+        <li><a href="contact.asp">Contact</a></li>
+        <li><a href="about.asp">About</a></li>
 
-        <!-- Iterate over each project assigned to the user -->
-        <div th:each="project : ${user.projects}">
-            <!-- Project information -->
-            <div class="project-info">
-                <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>
-                <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>
-                <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>
-                <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>
-                <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>
+    </ul>
+</div> -->
+<div class="full-screen-container">
+
+    <div class="projects-container">
+        <h1>Team Projects</h1>
+        <!-- Iterate over each user and display their assigned projects -->
+        <div th:each="user : ${teamMembers}">
+            <!-- Container for user projects -->
+            <div class="user-container">
+                <!-- Title with the username of the user -->
+                <h2 class="user-title" th:text="${user.username}"></h2>
+
+                <!-- Iterate over each project assigned to the user -->
+                <div th:each="project : ${user.projects}">
+                    <!-- Project information -->
+                    <div class="project-info">
+                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>
+                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>
+                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>
+                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>
+                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>
+                    </div>
+                </div>
             </div>
         </div>
+
+
+
+
+<!--        <div th:each="user : ${teamMembers}">-->
+<!--            &lt;!&ndash; Container for user projects &ndash;&gt;-->
+<!--            <div class="user-container">-->
+<!--                &lt;!&ndash; Title with the username of the user &ndash;&gt;-->
+<!--                <h2 class="user-title" th:text="${user.username}"></h2>-->
+
+<!--                &lt;!&ndash; Iterate over each project assigned to the user &ndash;&gt;-->
+<!--                <div th:each="project : ${user.projects}">-->
+<!--                    &lt;!&ndash; Project information &ndash;&gt;-->
+<!--                    <div class="project-info">-->
+<!--                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>-->
+<!--                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>-->
+<!--                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>-->
+<!--                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>-->
+<!--                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
+<!--        <div th:each="user : ${teamMembers}">-->
+<!--            &lt;!&ndash; Container for user projects &ndash;&gt;-->
+<!--            <div class="user-container">-->
+<!--                &lt;!&ndash; Title with the username of the user &ndash;&gt;-->
+<!--                <h2 class="user-title" th:text="${user.username}"></h2>-->
+
+<!--                &lt;!&ndash; Iterate over each project assigned to the user &ndash;&gt;-->
+<!--                <div th:each="project : ${user.projects}">-->
+<!--                    &lt;!&ndash; Project information &ndash;&gt;-->
+<!--                    <div class="project-info">-->
+<!--                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>-->
+<!--                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>-->
+<!--                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>-->
+<!--                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>-->
+<!--                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
+<!--        <div th:each="user : ${teamMembers}">-->
+<!--            &lt;!&ndash; Container for user projects &ndash;&gt;-->
+<!--            <div class="user-container">-->
+<!--                &lt;!&ndash; Title with the username of the user &ndash;&gt;-->
+<!--                <h2 class="user-title" th:text="${user.username}"></h2>-->
+
+<!--                &lt;!&ndash; Iterate over each project assigned to the user &ndash;&gt;-->
+<!--                <div th:each="project : ${user.projects}">-->
+<!--                    &lt;!&ndash; Project information &ndash;&gt;-->
+<!--                    <div class="project-info">-->
+<!--                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>-->
+<!--                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>-->
+<!--                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>-->
+<!--                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>-->
+<!--                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
+<!--        <div th:each="user : ${teamMembers}">-->
+<!--            &lt;!&ndash; Container for user projects &ndash;&gt;-->
+<!--            <div class="user-container">-->
+<!--                &lt;!&ndash; Title with the username of the user &ndash;&gt;-->
+<!--                <h2 class="user-title" th:text="${user.username}"></h2>-->
+
+<!--                &lt;!&ndash; Iterate over each project assigned to the user &ndash;&gt;-->
+<!--                <div th:each="project : ${user.projects}">-->
+<!--                    &lt;!&ndash; Project information &ndash;&gt;-->
+<!--                    <div class="project-info">-->
+<!--                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>-->
+<!--                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>-->
+<!--                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>-->
+<!--                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>-->
+<!--                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
+<!--        <div th:each="user : ${teamMembers}">-->
+<!--            &lt;!&ndash; Container for user projects &ndash;&gt;-->
+<!--            <div class="user-container">-->
+<!--                &lt;!&ndash; Title with the username of the user &ndash;&gt;-->
+<!--                <h2 class="user-title" th:text="${user.username}"></h2>-->
+
+<!--                &lt;!&ndash; Iterate over each project assigned to the user &ndash;&gt;-->
+<!--                <div th:each="project : ${user.projects}">-->
+<!--                    &lt;!&ndash; Project information &ndash;&gt;-->
+<!--                    <div class="project-info">-->
+<!--                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>-->
+<!--                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>-->
+<!--                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>-->
+<!--                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>-->
+<!--                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
+<!--        <div th:each="user : ${teamMembers}">-->
+<!--            &lt;!&ndash; Container for user projects &ndash;&gt;-->
+<!--            <div class="user-container">-->
+<!--                &lt;!&ndash; Title with the username of the user &ndash;&gt;-->
+<!--                <h2 class="user-title" th:text="${user.username}"></h2>-->
+
+<!--                &lt;!&ndash; Iterate over each project assigned to the user &ndash;&gt;-->
+<!--                <div th:each="project : ${user.projects}">-->
+<!--                    &lt;!&ndash; Project information &ndash;&gt;-->
+<!--                    <div class="project-info">-->
+<!--                        <div><strong>Project Name:</strong> <span th:text="${project.name}"></span></div>-->
+<!--                        <div><strong>Priority:</strong> <span th:text="${project.priority}"></span></div>-->
+<!--                        <div><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></div>-->
+<!--                        <div><strong>Number of Tasks:</strong> <span th:text="${project.tasks.size()}"></span></div>-->
+<!--                        <div><strong>Status:</strong> <span th:text="${project.status}"></span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 </body>
