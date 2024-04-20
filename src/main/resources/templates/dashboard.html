@@ -1,148 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Your Brand</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-  <title>Dashboard</title>
-  <style>
-        /* Basic CSS styling */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin">Admin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/profile">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/projects">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/teams">Teams</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        p {
-            text-align: center;
-        }
-
-        .add-project-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .add-project-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Your Brand</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/admin">Admin</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/profile">Profile</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/dashboard">Dashboard</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/projects">Projects</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/teams">Teams</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Logout</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<div class="container">
-  <h2>Welcome to Dashboard, <span th:text="${username}"></span></p></h2>
-  <div>
-    <h3>Projects</h3>
-    <ul>
-      <!-- Iterate over each project -->
-      <li th:each="project : ${projects}">
-        <!-- Display project properties -->
+    <div class="container-fluid px-0">
+      <div class="container">
+        <h2>Welcome to Dashboard, <span th:text="${username}"></span></h2>
         <div>
-          <p><strong>Name:</strong> <span th:text="${project.name}"></span></p>
-          <p><strong>Job Number:</strong> <span th:text="${project.jobNumber}"></span></p>
-          <p><strong>Status:</strong> <span th:text="${project.status}"></span></p>
-          <p><strong>Priority:</strong> <span th:text="${project.priority}"></span></p>
-          <p><strong>Due Date:</strong> <span th:text="${project.dueDate}"></span></p>
-          <p><strong>User:</strong> <span th:text="${project.user?.username}"></span></p>
+          <h3>
+            Active projects <span th:text="${#lists.size(projects)}"></span>
+          </h3>
+          <ul>
+            <!-- Iterate over each project -->
+            <li
+              th:each="project : ${projects}"
+              th:attr="onclick='location.href=\'/project/' + ${project.id} + '\''"
+            >
+              <!-- Display project properties -->
+              <div>
+                <p>
+                  <strong>Name:</strong> <span th:text="${project.name}"></span>
+                </p>
+                <p>
+                  <strong>Job Number:</strong>
+                  <span th:text="${project.jobNumber}"></span>
+                </p>
+                <p>
+                  <strong>Status:</strong>
+                  <span th:text="${project.status}"></span>
+                </p>
+                <p>
+                  <strong>Priority:</strong>
+                  <span
+                    th:text="${project.priority}"
+                    th:class="${project.priority == 'HIGH' ? 'priority-high' : project.priority == 'MEDIUM' ? 'priority-medium' : 'priority-low'}"
+                  >
+                  </span>
+                </p>
+                <p>
+                  <strong>Due Date:</strong>
+                  <span th:text="${project.dueDate}"></span>
+                </p>
+                <p>
+                  <strong>User:</strong>
+                  <span th:text="${project.user?.username}"></span>
+                </p>
+              </div>
+            </li>
+          </ul>
         </div>
-      </li>
-    </ul>
-  </div>
-  <div id="addProjectForm" style="display:none;">
-    <h3>Add Project</h3>
-    <form id="projectForm" th:action="@{/dashboard/addProject}" th:object="${projectDto}" method="post">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required th:field="*{name}"><br>
-
-      <label for="jobNumber">Job Number:</label>
-      <input type="text" id="jobNumber" name="jobNumber" th:field="*{jobNumber}"><br>
-
-      <label for="status">Status:</label>
-      <select id="status" name="status" th:field="*{status}">
-        <option value="NOT_STARTED">Not started</option>
-        <option value="MRT">MRT</option>
-        <option value="IN_PROGRESS">In progress</option>
-        <option value="COMPLETED">Completed</option>
-        <option value="ON_FIELD">On field</option>
-      </select><br>
-
-      <label for="priority">Priority:</label>
-      <select id="priority" name="priority" th:field="*{priority}">
-        <option value="LOW">Low</option>
-        <option value="MEDIUM">Medium</option>
-        <option value="HIGH">High</option>
-      </select><br>
-
-      <label for="dueDate">Due Date:</label>
-      <input type="date" id="dueDate" name="dueDate" th:field="*{dueDate}"><br>
-
-      <button type="submit">Create Project</button>
-    </form>
-
-  </div>
-  <button id="addProjectButton" class="add-project-btn" onclick="showProjectForm()">Add Project</button>
-</div>
-
-<script>
-    function showProjectForm() {
-        var form = document.getElementById("addProjectForm");
-        form.style.display = "block";
-    }
-</script>
-</body>
+      </div>
+    </div>
+  </body>
 </html>
