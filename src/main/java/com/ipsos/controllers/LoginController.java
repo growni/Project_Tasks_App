@@ -12,7 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String signInPage() {
+    public ModelAndView signInPage(@RequestParam(value = "error", required = false) String error) {
+        ModelAndView view = new ModelAndView("login");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -20,10 +21,15 @@ public class LoginController {
         System.out.println(authentication);
 
         if(!username.equals("anonymousUser")) {
-            return "redirect:/dashboard";
+            view.setViewName("redirect:/dashboard");
+            return view;
         }
 
-        return "login";
+        if(error != null) {
+            view.addObject("error", "Invalid username or password");
+        }
+
+        return view;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

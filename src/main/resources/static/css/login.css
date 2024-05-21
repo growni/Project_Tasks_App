@@ -16,7 +16,7 @@ body {
 }
 
 .full-screen-container {
-    background-image: url("/images/background.jpg");
+    background-image: url("../images/background.jpg");
     height: 100vh;
     width: 100vw;
     background-size: cover;
@@ -73,13 +73,20 @@ body {
     font-weight: lighter;
 }
 
-.input-group.success input {
-    box-shadow: 0 0 0 1px hsl(var(--success-hsl));
+.input-group.error .login-error {
+    /* color: hsl(var(--error-hsl)); */
+    display: block;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.input-group.error input {
+/* .input-group.success input {
+    box-shadow: 0 0 0 1px hsl(var(--success-hsl));
+} */
+
+/* .input-group.error input {
     box-shadow: 0 0 0 1px hsl(var(--error-hsl));
-}
+} */
 
 .input-group input:focus {
     box-shadow: 0 0 0 1px hsl(var(--primary-hsl));

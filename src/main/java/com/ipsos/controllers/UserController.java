@@ -44,9 +44,7 @@ public class UserController {
     public ModelAndView registerUser(@ModelAttribute UserDto userDto, HttpServletRequest request) {
 
         userService.registerUser(userDto);
-
         authenticateUserAfterRegistration(request, userDto.getUsername(), userDto.getConfirmPassword());
-
         ModelAndView view = new ModelAndView("redirect:/dashboard");
 
         return view;

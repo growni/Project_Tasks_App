@@ -73,14 +73,6 @@ body {
     font-weight: lighter;
 }
 
-.input-group.success input {
-    box-shadow: 0 0 0 1px hsl(var(--success-hsl));
-}
-
-.input-group.error input {
-    box-shadow: 0 0 0 1px hsl(var(--error-hsl));
-}
-
 .input-group input:focus {
     box-shadow: 0 0 0 1px hsl(var(--primary-hsl));
 }
@@ -97,10 +89,6 @@ body {
 
 .input-group.error .msg {
     color: hsl(var(--error-hsl));
-}
-
-.input-group.success .msg {
-    color: hsl(var(--success-hsl));
 }
 
 .register-button {

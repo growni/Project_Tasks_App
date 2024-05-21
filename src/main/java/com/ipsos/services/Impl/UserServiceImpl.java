@@ -5,9 +5,7 @@ import com.ipsos.entities.Role;
 import com.ipsos.entities.Team;
 import com.ipsos.entities.User;
 import com.ipsos.entities.dtos.UserDto;
-import com.ipsos.exceptions.EntityMissingFromDatabase;
-import com.ipsos.exceptions.InvalidDataException;
-import com.ipsos.exceptions.UsernameAlreadyExistsException;
+import com.ipsos.exceptions.*;
 import com.ipsos.repositories.ProjectRepository;
 import com.ipsos.repositories.RoleRepository;
 import com.ipsos.repositories.TeamRepository;
@@ -74,11 +72,11 @@ public class UserServiceImpl implements UserService {
     private void validateUserDto(UserDto userDto) {
 
         if(!isValidUsername(userDto.getUsername())) {
-            throw new InvalidDataException(INVALID_USERNAME);
+            throw new InvalidUsernameException(INVALID_USERNAME);
         }
 
         if(!isValidPassword(userDto.getPassword())) {
-            throw new InvalidDataException(INVALID_PASSWORD);
+            throw new InvalidPasswordException(INVALID_PASSWORD);
         }
 
         if(userDto.getRoles().size() > 0) {
@@ -88,7 +86,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-            throw new InvalidDataException(CONFIRM_PASSWORD_INCORRECT);
+            throw new InvalidConfirmationPasswordException(CONFIRM_PASSWORD_INCORRECT);
         }
 
     }
