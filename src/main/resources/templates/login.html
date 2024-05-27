@@ -3,7 +3,7 @@
   <meta charset="UTF-8">
   <title>Login</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../static/css/login.css" />
+  <link rel="stylesheet" href="/css/login.css" />
 
 </head>
 <body>
@@ -12,19 +12,19 @@
   <div class="login-container">
     <h1 class="login-title">Welcome</h1>
     <form class="form" method="post" role="form" th:action="@{/login}">
-      <div class="input-group success">
+      <div class="input-group">
         <label for="username"></label>
         <input type="text" id="username" name="username" placeholder="Enter username">
         
       </div>
 
-      <div class="input-group error">
+      <div class="input-group">
         <label for="password"></label>
         <input type="password" name="password" id="password" placeholder="Enter password">
         
       </div>
-      <div class="input-group error">
-        <p class="msg" th:if="${error}" th:text="${error}"></p>
+      <div class="input-group">
+        <p class="msg" th:if="${error}" th:text="${error}">error</p>
       </div>
       <button type="submit" class="login-button">Login</button>
       <button type="button" class="login-button register-button" onclick="window.location.href='/register'">Register</button>

@@ -7,7 +7,7 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -76,7 +76,7 @@
                   <strong>Priority:</strong>
                   <span
                     th:text="${project.priority}"
-                    th:class="${project.priority == 'HIGH' ? 'priority-high' : project.priority == 'MEDIUM' ? 'priority-medium' : 'priority-low'}"
+                    th:class="${project.priority == T(com.ipsos.entities.enums.Priority).HIGH ? 'priority-high' : project.priority == T(com.ipsos.entities.enums.Priority).MEDIUM ? 'priority-medium' : 'priority-low'}"
                   >
                   Test</span>
                 </p>

@@ -78,17 +78,9 @@ body {
 }
 
 .input-group .msg {
-    display: none;
-    font-size: .75rem;
-}
-
-.input-group.success .msg,
-.input-group.error .msg {
-    display: block;
-}
-
-.input-group.error .msg {
     color: hsl(var(--error-hsl));
+    display: block;
+    font-size: .75rem;
 }
 
 .register-button {

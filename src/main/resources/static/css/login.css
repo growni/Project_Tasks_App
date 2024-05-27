@@ -73,41 +73,24 @@ body {
     font-weight: lighter;
 }
 
-.input-group.error .login-error {
-    /* color: hsl(var(--error-hsl)); */
+.input-group .login-error {
     display: block;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* .input-group.success input {
-    box-shadow: 0 0 0 1px hsl(var(--success-hsl));
-} */
-
-/* .input-group.error input {
-    box-shadow: 0 0 0 1px hsl(var(--error-hsl));
-} */
-
-.input-group input:focus {
+.input-group:focus {
     box-shadow: 0 0 0 1px hsl(var(--primary-hsl));
 }
 
+
 .input-group .msg {
-    display: none;
+    display: block;
     font-size: .75rem;
 }
 
-.input-group.success .msg,
-.input-group.error .msg {
-    display: block;
-}
-
-.input-group.error .msg {
+.input-group .msg {
     color: hsl(var(--error-hsl));
-}
-
-.input-group.success .msg {
-    color: hsl(var(--success-hsl));
 }
 
 .login-button {

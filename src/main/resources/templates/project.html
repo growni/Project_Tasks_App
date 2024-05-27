@@ -51,7 +51,8 @@
             </p>
             <p> Status: <span id="statusSpan" th:text="${project.status}"></span>
             </p>
-            <p> Priority: <span id="prioritySpan" th:text="${project.priority}"></span>
+            <p> Priority: <span id="prioritySpan" th:text="${project.priority}" th:class="${project.priority == T(com.ipsos.entities.enums.Priority).HIGH ? 'priority-high' : project.priority == T(com.ipsos.entities.enums.Priority).MEDIUM ? 'priority-medium' : 'priority-low'}"
+            ></span>
             </p>
             <p> Due Date: <span id="dueDateSpan" th:text="${project.dueDate}"></span>
             </p>
@@ -119,7 +120,7 @@
                 <span>Status: <span th:text="${task.status}"></span>
                 </span>
                 <br />
-                <span>Priority: <span th:text="${task.priority}"></span>
+                <span>Priority: <span th:text="${task.priority}" th:class="${task.priority == T(com.ipsos.entities.enums.Priority).HIGH ? 'priority-high' : task.priority == T(com.ipsos.entities.enums.Priority).MEDIUM ? 'priority-medium' : 'priority-low'}"></span>
                 </span>
                 <br />
                 <!-- Add buttons for editing or deleting tasks -->
