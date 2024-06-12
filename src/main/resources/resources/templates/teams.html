@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teams</title>
+</head>
+<body>
+<h1>Teams</h1>
+
+<button id="addTeamButton" onclick="toggleForm()">Add Team</button>
+
+<div id="teamForm" style="display: none;">
+  <form id="addTeamForm" action="/teams/add" method="post">
+    <label for="teamName">Team Name:</label>
+    <input type="text" id="teamName" name="teamName" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+  <tr>
+    <th>Team Name</th>
+    <th>Team Leader</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Iterate over teams to display each team and its leader -->
+  <tr th:each="team : ${teams}" th:onclick="'redirectToTeamDetails(\'' + ${team.id} + '\')'" style="cursor: pointer">
+    <td th:text="${team.name}"></td>
+    <td th:text="${team.teamLeader != null ? team.teamLeader.username : 'No Leader'}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<script>
+    function redirectToTeamDetails(teamId) {
+      window.location.href = "/team/" + teamId;
+    }
+
+    function toggleForm() {
+        var form = document.getElementById("teamForm");
+        form.style.display = (form.style.display === "none") ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Details</title>
+</head>
+<body>
+<h1>Team Details</h1>
+<div>
+  <p><strong>Team Name:</strong> <span id="teamName" th:text="${team.name}"></span></p>
+  <p><strong>Team Leader:</strong>
+    <span th:if="${team.teamLeader != null}" th:text="${team.teamLeader.username}"></span>
+    <span th:unless="${team.teamLeader != null}">No Leader Assigned</span>
+  </p>
+  <p><strong>Team Members:</strong></p>
+  <ul id="teamMembers">
+    <th:block th:each="member : ${team.members}">
+      <li>
+        <span th:text="${member.username}"></span>
+        <!-- Remove Button -->
+        <form th:action="@{/team/removeMember}" method="post">
+          <input type="hidden" name="teamId" th:value="${team.id}" />
+          <input type="hidden" name="memberId" th:value="${member.id}" />
+          <button class="removeMemberBtn" type="submit">Remove</button>
+        </form>
+      </li>
+    </th:block>
+  </ul>
+</div>
+<form id="assignLeaderForm" th:action="@{/team/assignLeader}" method="post">
+  <input type="hidden" name="teamId" th:value="${team.id}" />
+  <select id="leaderSelect" name="userId" required>
+    <option value="">Select Team Leader</option>
+    <th:block th:each="user : ${users}">
+      <option th:value="${user.id}" th:text="${user.username}"></option>
+    </th:block>
+  </select>
+  <button id="assignLeaderBtn" type="submit">Assign Team Leader</button>
+</form>
+<form id="joinTeamForm" th:action="@{/team/join}" method="post">
+  <input type="hidden" name="teamId" th:value="${team.id}" />
+  <button id="joinTeamBtn" type="submit">Join Team</button>
+</form>
+<form id="teamProjects" th:action="@{/team/teamProjects}" method="get">
+  <input type="hidden" name="teamId" th:value="${team.id}" />
+  <button id="showTeamProjects" type="submit">Team Projects</button>
+</form>
+
+<div>
+  <h2>Join Requests</h2>
+  <ul id="joinRequests">
+    <!-- List join requests here -->
+    <th:block th:each="request : ${joinRequests}">
+      <li>
+        <span th:text="${request}"></span>
+        <!-- Approve Button -->
+        <form th:action="@{/team/approveRequest}" method="post">
+          <input type="hidden" name="teamId" th:value="${team.id}" />
+          <input type="hidden" name="username" th:value="${request}" />
+          <button class="approveRequestBtn" type="submit">Approve</button>
+        </form>
+        <!-- Reject Button -->
+        <form th:action="@{/team/rejectRequest}" method="post">
+          <input type="hidden" name="teamId" th:value="${team.id}" />
+          <input type="hidden" name="username" th:value="${request}" />
+          <button class="rejectRequestBtn" type="submit">Reject</button>
+        </form>
+      </li>
+    </th:block>
+  </ul>
+</div>
+
+</body>
+</html>

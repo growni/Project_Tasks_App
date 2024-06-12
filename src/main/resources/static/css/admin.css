@@ -1,0 +1,36 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+    --primary-light-hsl: 200, 100%, 91%;
+    --primary-hsl: 200, 100%, 50%;
+    --primary-dark-hsl: 200, 100%, 6%;
+    --success-hsl: 100, 60%, 50%;
+    --error-hsl: 0, 60%, 50%;
+}
+
+body {
+    background-image: url("../images/background.jpg");
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+    color: hsl(var(--primary-light-hsl), .7);
+    
+}
+
+.container {
+    height: 100vh;
+    width: 100vw;
+    display: inline;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+tbody tr:hover {
+    background-color: hsl(var(--primary-dark-hsl), .7);
+    cursor: pointer;
+    box-shadow: 0 0 15px 0 hsl(var(--primary-light-hsl), .7);
+}

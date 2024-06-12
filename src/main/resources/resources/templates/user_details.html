@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Details</title>
+</head>
+<body>
+<h1>User Details</h1>
+
+<div>
+  <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+  <p><strong>Password:</strong> <span th:text="${user.password}"></span></p>
+    <p><strong>Roles:</strong>
+        <span th:each="role, roleStat : ${user.roles}">
+        <span th:text="${role.name}"></span>
+        <span th:unless="${roleStat.last}">, </span>
+    </span>
+    </p>
+  <p><strong>Account Enabled:</strong> <span th:text="${user.enabled}"></span></p>
+  <p><strong>Team:</strong> <span th:text="${user.team != null ? user.team.name : 'Not in a team'}"></span></p>
+</div>
+
+<form th:action="@{/admin/user_details/{userId}/edit/username(userId=${user.id})}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <label for="newUsername">New Username:</label>
+    <input type="text" id="newUsername" name="username" required>
+    <button type="submit">Save</button>
+</form>
+
+<form th:action="@{/admin/user_details/{userId}/edit/password(userId=${user.id})}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <label for="newPassword">New Password:</label>
+    <input type="text" id="newPassword" name="password" required>
+    <button type="submit">Save</button>
+</form>
+
+<form th:action="@{/admin/user_details/{userId}/add/role(userId=${user.id})}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <label for="roleTypeAdd">Role:</label>
+    <select id="roleTypeAdd" name="roleTypeAdd">
+        <option value="ROLE_ADMIN">Admin</option>
+        <option value="ROLE_DEVELOPER">Developer</option>
+        <option value="ROLE_LEADER">Leader</option>
+    </select>
+    <button type="submit">Add</button>
+</form>
+
+<form th:action="@{/admin/user_details/{userId}/remove/role(userId=${user.id})}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <label for="roleTypeRemove">Role:</label>
+    <select id="roleTypeRemove" name="roleTypeRemove">
+        <option value="ROLE_ADMIN">Admin</option>
+        <option value="ROLE_DEVELOPER">Developer</option>
+        <option value="ROLE_LEADER">Leader</option>
+    </select>
+    <button type="submit">Remove</button>
+</form>
+
+<form th:action="@{/admin/user_details/{userId}/delete(userId=${user.id})}" method="post">
+  <input type="hidden" name="userId" th:value="${user.id}">
+  <button type="submit">Delete Account</button>
+</form>
+
+<form th:action="@{/admin/user_details/{userId}/disable(userId=${user.id})}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <button type="submit">Disable Account</button>
+</form>
+
+<form th:action="@{/admin/user_details/{userId}/activate(userId=${user.id})}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <button type="submit">Activate Account</button>
+</form>
+
+<script>
+<script>
+  function toggleEdit(property) {
+    var element = document.getElementById(property);
+    var form = document.getElementById(property + 'Form');
+    if (element && form) {
+      element.style.display = 'none';
+      form.style.display = 'block';
+      var inputField = form.querySelector('input[type=text]');
+      if (inputField) {
+        inputField.focus();
+      }
+    }
+  }
+
+  function saveEdit(property) {
+    var form = document.getElementById(property + 'Form');
+    var newValue = form.querySelector('input[type=text]').value;
+    // Perform validation if needed
+    // Submit the form or send the newValue to your backend using AJAX
+    // For demonstration, let's log the new value to the console
+    console.log('New ' + property + ': ' + newValue);
+    form.style.display = 'none';
+    document.getElementById(property).textContent = newValue;
+    document.getElementById(property).style.display = 'inline';
+  }
+
+  function cancelEdit(property) {
+    var form = document.getElementById(property + 'Form');
+    form.style.display = 'none';
+    document.getElementById(property).style.display = 'inline';
+  }
+</script>
+
+</body>
+</html>
